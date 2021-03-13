@@ -12,9 +12,13 @@ limit_number_lenght=6
 os.system('clear')
 ui.main_menu()
 
+
 player = entities.Spider("Player",True)
 enemy1 = entities.Insect("Bugs",False)
 enemy2 = entities.Insect("Big Bug",False)
+
+adversary = [enemy1,enemy2]
+#adversary.append()
 
 ##for preview
 #player.hp-=60
@@ -28,4 +32,4 @@ enemy2 = entities.Insect("Big Bug",False)
 #enemy1.max_sp=999999
 #enemy1.sp=int(enemy1.max_sp/2)
 
-battle.battle(player,[enemy1,enemy2],False)
+#battle.battle(player,[enemy1,enemy2],False)

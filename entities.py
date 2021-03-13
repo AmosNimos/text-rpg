@@ -19,6 +19,10 @@ class Monster:
 		self.player=False
 		self.skills=[skills.tackle_skill]
 		self.status_effects=[] #se
+		self.x = 0
+		self.y = 0
+		self.experience=0 #xp
+		self.spd = 20
 
 	def use_skill(self,skill,target,player,opponent):
 		if self.hp >= skill["cost_hp"] and self.sp >= skill["cost_sp"] and self.mp >= skill["cost_mp"]:
@@ -93,11 +97,6 @@ class Spider(Insect):
 #class reptiles()
 #class amphibian()
 #class arthropods()
-
-class Player():
-	def __init__(self):
-		#super().__init__(name,age) #Get argument from parent class
-		self.experience=0 #xp
 
 
 
