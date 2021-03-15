@@ -16,6 +16,11 @@ stair_symbol = "H"
 wall_symbol = "#"
 empty_symbol = "."
 enemy_symbol = "%"
+#rows == height
+w = int((rows)-8)
+h = w
+cursor_active=False
+cursor_position = [0,0]
 
 
 #0=empty, 1=wall, 2=stair
@@ -31,7 +36,9 @@ def display(grid):
 				for enemy in game.adversary:
 					if x == enemy.x and y == enemy.y:
 						creature=True
-				if(x==game.player.x and y==game.player.y):
+				if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
+					linetxt+=" "+colored("?",'white')
+				elif(x==game.player.x and y==game.player.y):
 					#display player
 					linetxt+=" "+colored(player_symbol,'white')
 				elif creature == True:
@@ -49,9 +56,6 @@ def display(grid):
 	print("")
 	print(gen_line("+","-"))
 
-
-w = int((rows)-4)
-h = int((cols/2)-2)
 def gen_grid(w,h):
 	for x in range(w):
 		grid.append([])
@@ -101,7 +105,7 @@ def update_player(xx,yy):
 	game.player.x = xx
 	game.player.y = yy
 
-def spawn_enemy():
+def spawn_enemy(w,h):
 	#player spawn
 	for enemy in game.adversary:
 		xx=rn.randrange(1,w-1)
@@ -130,10 +134,10 @@ def enemy_movement():
 				if grid[enemy.x][enemy.y-1] == 0 and enemy.y-1>0:
 					enemy.y-=1
 
-def spawn_player():
+def spawn_player(w,h):
 	#player spawn
-	xx=rn.randrange(0,w)
-	yy=rn.randrange(0,h)
+	xx=rn.randrange(4,w-4)
+	yy=rn.randrange(4,h-4)
 	update_player(xx,yy)
 	grid[xx][yy] = 0
 	#spawn stair
@@ -163,6 +167,52 @@ def main():
 		for e in input_generator:
 			return e
 
+def player_controller(cursor_active,cursor_position):
+	if cursor_active == False:
+		if keypress == 'l':
+			if(grid[game.player.x+1][game.player.y]!=1):
+				game.player.x+=1;
+				#add (player move +=1, if move > spd: enemy move)
+				#debug = "Move Right"
+		if keypress == 'h':
+			if(grid[game.player.x-1][game.player.y]!=1):
+				game.player.x-=1;
+				#debug = "Move Left"
+		if keypress == 'j':
+			if(grid[game.player.x][game.player.y-1]!=1):
+				game.player.y-=1;
+				#debug = "Move Up"
+		if keypress == 'k':
+			if(grid[game.player.x][game.player.y+1]!=1):
+				game.player.y+=1;
+				#debug = "Move Down"
+		if grid[xx][yy] == 2:
+			debug = "Ladder"
+			if(floor>0):
+				choice = input("Ladder available action (up,down,nothing)")
+				#when using ladder save floor current floor and generate next floor, or load previus.
+			else :
+				choice = input("Ladder available action (down,nothing)")
+		if keypress == ';':
+			cursor_active = True
+			cursor_position=[game.player.x,game.player.y]
+			debug="cursor: True"
+	else:
+		if keypress == 'l' and cursor_position[0]<w-1:
+			cursor_position[0]+=1;
+				#debug = "Move Right"
+		if keypress == 'h' and cursor_position[0]>0:
+			cursor_position[0]-=1;
+				#debug = "Move Left"
+		if keypress == 'j':
+			cursor_position[1]-=1 and cursor_position[1]>0;
+				#debug = "Move Up"
+		if keypress == 'k'  and cursor_position[1]<h-2:
+			cursor_position[1]+=1;
+			#cursor controller
+	return cursor_active,cursor_position
+
+
 grid = gen_grid(w,h)
 grid = gen_wall()
 grid = gen_automata()
@@ -171,11 +221,8 @@ grid = gen_automata()
 xx=0
 yy=0
 
-grid = spawn_player()
-spawn_enemy()
-
-
-#gen grid
+grid = spawn_player(w,h)
+spawn_enemy(w,h)
 
 
 os.system('clear')
@@ -184,34 +231,15 @@ display(grid)
 while True:
 	keypress = main()
 	debug=""
-	if keypress == 'd':
-		if(grid[game.player.x+1][game.player.y]!=1):
-			game.player.x+=1;
-			#add (player move +=1, if move > spd: enemy move)
-			#debug = "Move Right"
-	if keypress == 'a':
-		if(grid[game.player.x-1][game.player.y]!=1):
-			game.player.x-=1;
-			#debug = "Move Left"
-	if keypress == 'w':
-		if(grid[game.player.x][game.player.y-1]!=1):
-			game.player.y-=1;
-			#debug = "Move Up"
-	if keypress == 's':
-		if(grid[game.player.x][game.player.y+1]!=1):
-			game.player.y+=1;
-			#debug = "Move Down"
+
+	cursor_active,cursor_position = player_controller(cursor_active,cursor_position)
+
+	#permenent controlle
 	if keypress == '\x1b':
 		debug = "Exit"
 		print(debug)
 		exit()
-	if grid[xx][yy] == 2:
-		debug = "Ladder"
-		if(floor>0):
-			choice = input("Ladder available action (up,down,nothing)")
-			#when using ladder save floor current floor and generate next floor, or load previus.
-		else :
-			choice = input("Ladder available action (down,nothing)")
+
 	enemy_movement()
 	os.system('clear')
 	display(grid)

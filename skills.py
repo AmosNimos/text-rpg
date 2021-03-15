@@ -13,6 +13,7 @@ tackle_skill={
 	"affect_hp":10,
 	"affect_sp":0,
 	"affect_mp":0,
+	"range":0,
 	"support":False,
 	"status":False,
 }
@@ -27,6 +28,7 @@ bite_skill={
 	"affect_hp":4,
 	"affect_sp":0,
 	"affect_mp":0,
+	"range":0,
 	"support":False,
 	"status":False,
 }
@@ -42,6 +44,7 @@ poison_fang_skill={
 	"affect_hp":50,
 	"affect_sp":0,
 	"affect_mp":0,
+	"range":0,
 	"support":False,
 	"status":["poison",],
 }

@@ -3,8 +3,6 @@ import os
 import ui
 import entities
 import battle
-beep = lambda x: os.system("echo -n '\a';sleep 0.5;" * x)
-beep(3)
 
 limit_number_lenght=6
 

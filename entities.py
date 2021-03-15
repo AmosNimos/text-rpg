@@ -18,11 +18,18 @@ class Monster:
 		self.alive=True
 		self.player=False
 		self.skills=[skills.tackle_skill]
+		#stamina how long you can use your full speed bedor it decrease to one move per turn, befor each move remove health.
+		#each spiecies have their own random atribute rules.
+		self.atribute=tackle_skill={"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}
 		self.status_effects=[] #se
 		self.x = 0
 		self.y = 0
 		self.experience=0 #xp
 		self.spd = 20
+		self.age = 1
+		# longevity depend on the species
+		self.longevity=0
+
 
 	def use_skill(self,skill,target,player,opponent):
 		if self.hp >= skill["cost_hp"] and self.sp >= skill["cost_sp"] and self.mp >= skill["cost_mp"]:
