@@ -15,7 +15,8 @@ player_symbol = "@"
 stair_symbol = "H"
 wall_symbol = "#"
 empty_symbol = "."
-enemy_symbol = "%"
+enemy_symbol = "*"
+debug=""
 #rows == height
 w = int((rows)-8)
 h = w
@@ -167,7 +168,25 @@ def main():
 		for e in input_generator:
 			return e
 
-def player_controller(cursor_active,cursor_position):
+def appraisal(x,y):
+	print(x)
+	print(y)
+	print(grid[x][y])
+	if x == game.player.x and y == game.player.y:
+		return game.player.name
+	for enemy in game.adversary:
+		if x == enemy.x and y == enemy.y:
+			return enemy.name
+	if grid[x][y]==0:
+		return "Nothing"
+	if grid[x][y]==1:
+		return "Wall"
+	if grid[x][y]==2:
+		return "Ladder"
+
+
+
+def player_controller(cursor_active,cursor_position,debug):
 	if cursor_active == False:
 		if keypress == 'l':
 			if(grid[game.player.x+1][game.player.y]!=1):
@@ -196,7 +215,6 @@ def player_controller(cursor_active,cursor_position):
 		if keypress == ';':
 			cursor_active = True
 			cursor_position=[game.player.x,game.player.y]
-			debug="cursor: True"
 	else:
 		if keypress == 'l' and cursor_position[0]<w-1:
 			cursor_position[0]+=1;
@@ -210,7 +228,10 @@ def player_controller(cursor_active,cursor_position):
 		if keypress == 'k'  and cursor_position[1]<h-2:
 			cursor_position[1]+=1;
 			#cursor controller
-	return cursor_active,cursor_position
+		if keypress == ';':
+			cursor_active = False
+			debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
+	return cursor_active,cursor_position,debug
 
 
 grid = gen_grid(w,h)
@@ -230,9 +251,8 @@ display(grid)
 
 while True:
 	keypress = main()
-	debug=""
 
-	cursor_active,cursor_position = player_controller(cursor_active,cursor_position)
+	cursor_active,cursor_position,debug = player_controller(cursor_active,cursor_position,debug)
 
 	#permenent controlle
 	if keypress == '\x1b':
@@ -243,6 +263,4 @@ while True:
 	enemy_movement()
 	os.system('clear')
 	display(grid)
-	#if debug == "":
-		#print("press w,a,s,d key")
 	print(debug)
