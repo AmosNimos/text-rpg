@@ -16,11 +16,13 @@ class Monster:
 		self.mp=self.max_mp #magic point
 		self.lv=0 #level
 		self.alive=True
-		self.player=False
+		self.player=player
 		self.skills=[skills.tackle_skill]
+		self.turn=player
+		self.atribute={"spd":0,"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}
+		self.moves=0
 		#stamina how long you can use your full speed bedor it decrease to one move per turn, befor each move remove health.
 		#each spiecies have their own random atribute rules.
-		self.atribute=tackle_skill={"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}
 		self.status_effects=[] #se
 		self.x = 0
 		self.y = 0
@@ -89,11 +91,13 @@ class Insect(Monster):
 	def __init__(self,name,player):
 		super().__init__(name,player)
 		self.skills.append(skills.bite_skill)
+		self.atribute={"spd":2,"agi":4,"wiz":1,"str":1,"dex":4,"res":2,"sta":4}
 
 class Spider(Insect):
 	def __init__(self,name,player):
 		super().__init__(name,player)
 		self.skills.append(skills.poison_fang_skill)
+		self.atribute={"spd":4,"agi":6,"wiz":1,"str":2,"dex":8,"res":2,"sta":6}
 		#self.skills.append("web")
 
 #x = Insect("bob")
