@@ -262,7 +262,7 @@ def player_controller(cursor_active,cursor_position,debug):
 		if keypress == ';':
 			for enemy in adversary:
 				if cursor_position[0] == enemy.x and cursor_position[1] == enemy.y:
-					battle.battle(player,[enemy],False)
+					battle.battle(player,enemy,True)
 			cursor_active = False
 		debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
 	else:

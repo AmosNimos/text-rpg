@@ -1,3 +1,4 @@
+echo "1L0v3C0d1N6"
 git init
 git add *
 git commit -m "Update"

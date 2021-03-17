@@ -3,8 +3,9 @@ from termcolor import colored, cprint
 from random import *
 
 line = ui.gen_line("+","-")
-def battle(player,opponents,turn):
-	battle_menu(player,opponents)
+def battle(player,opponent,turn):
+	#battle_menu(player,opponent)
+	skills_menu(player,opponent)
 
 def battle_menu(player,opponents):
 	ui.clear()
@@ -34,7 +35,7 @@ def field(player,opponent):
 		ui.stats(player)
 		print(line)
 
-def skills_menu(player,opponent,opponents):
+def skills_menu(player,opponent):
 	turn=0
 	field(player,opponent)
 	while opponent.hp>0 and player.hp>0:
