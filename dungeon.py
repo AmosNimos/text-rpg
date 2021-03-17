@@ -6,6 +6,8 @@ from curtsies import Input
 from ui import gen_line
 import game
 import time
+import battle
+import entities
 
 size = os.get_terminal_size() 
 cols = size[0]
@@ -17,12 +19,17 @@ wall_symbol = "#"
 empty_symbol = "."
 enemy_symbol = "*"
 debug=""
+
 #rows == height
 w = int((rows)-8)
 h = w
 cursor_active=False
 cursor_position = [0,0]
 
+player = entities.Spider("Player",True)
+enemy1 = entities.Insect("Bugs",False)
+enemy2 = entities.Insect("Big Bug",False)
+adversary = [enemy1,enemy2]
 
 #0=empty, 1=wall, 2=stair
 def display(grid):
@@ -34,12 +41,12 @@ def display(grid):
 		try:
 			for x in range(len(grid[y])):
 				creature=False
-				for enemy in game.adversary:
+				for enemy in adversary:
 					if x == enemy.x and y == enemy.y:
 						creature=True
 				if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
 					linetxt+=" "+colored("?",'white')
-				elif(x==game.player.x and y==game.player.y):
+				elif(x==player.x and y==player.y):
 					#display player
 					linetxt+=" "+colored(player_symbol,'white')
 				elif creature == True:
@@ -103,12 +110,12 @@ def gen_automata():
 	return grid
 
 def update_player(xx,yy):
-	game.player.x = xx
-	game.player.y = yy
+	player.x = xx
+	player.y = yy
 
 def spawn_enemy(w,h):
 	#player spawn
-	for enemy in game.adversary:
+	for enemy in adversary:
 		xx=rn.randrange(1,w-1)
 		yy=rn.randrange(1,h-1)
 		while grid[xx][yy] != 0:
@@ -118,7 +125,7 @@ def spawn_enemy(w,h):
 		enemy.y=yy
 
 def enemy_movement():
-	for enemy in game.adversary:
+	for enemy in adversary:
 		for loop in range(round(enemy.spd/10)):
 			#debug = look
 			debug=str(enemy.name)+" turn"
@@ -188,9 +195,9 @@ def appraisal(x,y):
 	print(x)
 	print(y)
 	print(grid[x][y])
-	if x == game.player.x and y == game.player.y:
-		return game.player.name
-	for enemy in game.adversary:
+	if x == player.x and y == player.y:
+		return player.name
+	for enemy in adversary:
 		if x == enemy.x and y == enemy.y:
 			return enemy.name
 	if grid[x][y]==0:
@@ -203,27 +210,27 @@ def appraisal(x,y):
 
 
 def player_controller(cursor_active,cursor_position,debug):
-	if cursor_active == False and game.player.turn == True:
+	if cursor_active == False and player.turn == True:
 		if keypress == 'l':
-			if(grid[game.player.x+1][game.player.y]!=1):
-				game.player.x+=1;
-				game.player.moves+=1;
+			if(grid[player.x+1][player.y]!=1):
+				player.x+=1;
+				player.moves+=1;
 				#add (player move +=1, if move > spd: enemy move)
 				#debug = "Move Right"
 		if keypress == 'h':
-			if(grid[game.player.x-1][game.player.y]!=1):
-				game.player.x-=1;
-				game.player.moves+=1;
+			if(grid[player.x-1][player.y]!=1):
+				player.x-=1;
+				player.moves+=1;
 				#debug = "Move Left"
 		if keypress == 'j':
-			if(grid[game.player.x][game.player.y-1]!=1):
-				game.player.y-=1;
-				game.player.moves+=1;
+			if(grid[player.x][player.y-1]!=1):
+				player.y-=1;
+				player.moves+=1;
 				#debug = "Move Up"
 		if keypress == 'k':
-			if(grid[game.player.x][game.player.y+1]!=1):
-				game.player.y+=1;
-				game.player.moves+=1;
+			if(grid[player.x][player.y+1]!=1):
+				player.y+=1;
+				player.moves+=1;
 				#debug = "Move Down"
 		if grid[xx][yy] == 2:
 			debug = "Ladder"
@@ -234,12 +241,12 @@ def player_controller(cursor_active,cursor_position,debug):
 				choice = input("Ladder available action (down,nothing)")
 		if keypress == ';':
 			cursor_active = True
-			cursor_position=[game.player.x,game.player.y]
-		if game.player.moves > game.player.atribute["spd"]:
-			debug=str(game.player.moves)+" spd: "+str(game.player.atribute["spd"])
-			game.player.turn=False
-			game.player.moves=0
-	elif game.player.turn == True:
+			cursor_position=[player.x,player.y]
+		if player.moves > player.atribute["spd"]:
+			debug=str(player.moves)+" spd: "+str(player.atribute["spd"])
+			player.turn=False
+			player.moves=0
+	elif player.turn == True:
 		if keypress == 'l' and cursor_position[0]<w-1:
 			cursor_position[0]+=1;
 				#debug = "Move Right"
@@ -253,6 +260,9 @@ def player_controller(cursor_active,cursor_position,debug):
 			cursor_position[1]+=1;
 			#cursor controller
 		if keypress == ';':
+			for enemy in adversary:
+				if cursor_position[0] == enemy.x and cursor_position[1] == enemy.y:
+					battle.battle(player,[enemy],False)
 			cursor_active = False
 		debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
 	else:
@@ -285,9 +295,9 @@ while True:
 		print(debug)
 		exit()
 	os.system('clear')
-	if game.player.turn == False:
+	if player.turn == False:
 		enemy_movement()
-		game.player.turn=True
-		debug=str(game.player.name)+" turn"
+		player.turn=True
+		debug=str(player.name)+" turn"
 	display(grid)
 	print(str(debug))
