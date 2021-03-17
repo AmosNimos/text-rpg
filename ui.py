@@ -12,6 +12,9 @@ cols = size[0]
 rows = size[1]
 margin=" "
 
+def play(sound):
+	playsound(sound)
+
 def clear():
 	os.system('clear')
 

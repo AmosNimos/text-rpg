@@ -49,6 +49,7 @@ class Monster:
 			target.mp-=skill["affect_mp"]
 			battle.field(player,opponent)
 			text = target.name+" get hit by "+skill["name"]+"."
+			ui.play("data/hit.wav")
 			ui.delay_text(text,True,True)
 			time.sleep(0.25)
 			if skill["support"]==False:

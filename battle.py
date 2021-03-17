@@ -35,18 +35,25 @@ def field(player,opponent):
 		ui.stats(player)
 		print(line)
 
-def skills_menu(player,opponent):
-	turn=0
+def playermove(player,opponent):
+	entry = int(input(">"))
+	ui.clear()
 	field(player,opponent)
-	while opponent.hp>0 and player.hp>0:
-		if turn == 0:
+	if entry <= len(player.skills):
+		player.use_skill(player.skills[entry],opponent,player,opponent)
+		player.moves +=1;
+
+def skills_menu(player,opponent):
+	field(player,opponent)
+	if opponent.hp>0 and player.hp>0:
+		if player.turn == True:
 			print(ui.skills_options(player))
 			print(line)
-			turn = playermove(player,opponent)
+			playermove(player,opponent)
 		else:
 			entry = opponent.skills[round(randrange(len(opponent.skills)))]
 			opponent.use_skill(entry,player,player,opponent)
-			turn=0
+			opponent.moves+=1
 	if opponent.hp<=0:
 		print(opponent.name+" was defeated")
 		if len(opponents) > 0:
@@ -58,12 +65,3 @@ def skills_menu(player,opponent):
 		ui.game_over()
 		#info name, description, consume, inflict.
 
-def playermove(player,opponent):
-	turn=0
-	entry = int(input(">"))
-	ui.clear()
-	field(player,opponent)
-	if entry <= len(player.skills):
-		player.use_skill(player.skills[entry],opponent,player,opponent)
-		turn = 1
-	return turn
