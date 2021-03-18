@@ -14,6 +14,7 @@ class Monster:
 		self.hp=self.max_hp #health point
 		self.max_mp=0
 		self.mp=self.max_mp #magic point
+		self.sustenance=self.max_sp
 		self.lv=0 #level
 		self.alive=True
 		self.player=player

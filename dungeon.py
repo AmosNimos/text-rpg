@@ -152,7 +152,7 @@ def enemy_movement():
 					os.system('clear')
 					display(grid)
 					print(debug)
-					time.sleep(1)
+					time.sleep(0.1)
 					enemy.moves+=1
 					debug=str(enemy.name)+" turn, moves ["+str(enemy.moves)+"/"+str(enemy.atribute["spd"])+"]"
 		enemy.moves=0
@@ -192,6 +192,7 @@ def main():
 			return e
 
 def appraisal(x,y):
+	# the amount of information of each apresal is equivalent to the wiz level, just like moves is equivalent to spd, the information are stored as string in list
 	print(x)
 	print(y)
 	print(grid[x][y])
@@ -201,13 +202,36 @@ def appraisal(x,y):
 		if x == enemy.x and y == enemy.y:
 			return enemy.name
 	if grid[x][y]==0:
-		return "Nothing"
+		return "Ground"
 	if grid[x][y]==1:
 		return "Wall"
 	if grid[x][y]==2:
 		return "Ladder"
 
-
+def check_for_wall(from_x,from_y,to_x,to_y):
+	if from_y == to_y:
+		if from_x < to_x:
+			while from_x < to_x:
+				if grid[from_x][from_y] == 1:
+					return True
+				from_x+=1
+		else:
+			while to_x < from_x:
+				if grid[from_x][from_y] == 1:
+					return True
+				to_x+=1
+	if from_x == to_x:
+		if from_y < to_y:
+			while from_y < to_y:
+				if grid[from_x][from_y] == 1:
+					return True
+				from_y+=1
+		else:
+			while to_y < from_y:
+				if grid[from_x][from_y] == 1:
+					return True
+				to_y+=1
+	return False
 
 def player_controller(cursor_active,cursor_position):
 	debug=""
@@ -216,7 +240,7 @@ def player_controller(cursor_active,cursor_position):
 		player.moves=0
 	if cursor_active == False and player.turn == True:
 		debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
-		if keypress == 'l':
+		if keypress == 'l' and player.x<w-1:
 			if(grid[player.x+1][player.y]!=1):
 				player.x+=1;
 				player.moves+=1;
@@ -225,7 +249,7 @@ def player_controller(cursor_active,cursor_position):
 				debug="this direction is obstucted by a wall"
 				#add (player move +=1, if move > spd: enemy move)
 				#debug = "Move Right"
-		if keypress == 'h':
+		if keypress == 'h' and player.x>0:
 			if(grid[player.x-1][player.y]!=1):
 				player.x-=1;
 				player.moves+=1;
@@ -233,7 +257,7 @@ def player_controller(cursor_active,cursor_position):
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Left"
-		if keypress == 'j':
+		if keypress == 'j' and player.y>0:
 			if(grid[player.x][player.y-1]!=1):
 				player.y-=1;
 				player.moves+=1;
@@ -241,7 +265,7 @@ def player_controller(cursor_active,cursor_position):
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Up"
-		if keypress == 'k':
+		if keypress == 'k' and player.y<h-2:
 			if(grid[player.x][player.y+1]!=1):
 				player.y+=1;
 				player.moves+=1;
@@ -278,12 +302,20 @@ def player_controller(cursor_active,cursor_position):
 		if keypress == 'k'  and cursor_position[1]<h-2:
 			cursor_position[1]+=1;
 			#cursor controller
+		debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
 		if keypress == ';':
 			for enemy in adversary:
 				if cursor_position[0] == enemy.x and cursor_position[1] == enemy.y:
-					battle.battle(player,enemy,True)
+					if enemy.x == player.x or enemy.y == player.y:
+						if check_for_wall(player.x,player.y,enemy.x,enemy.y)==False:
+							#if no wall are found between the two
+							battle.battle(player,enemy,True)
+						else:
+							debug=str(enemy.name)+" out of reach."
+					else:
+						#debug="uh... not sure about that."
+						debug=str(enemy.name)+" out of reach."
 			cursor_active = False
-		debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
 	else:
 		print("...")
 	return cursor_active,cursor_position,debug
