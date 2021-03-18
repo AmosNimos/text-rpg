@@ -126,36 +126,36 @@ def spawn_enemy(w,h):
 
 def enemy_movement():
 	for enemy in adversary:
-		for loop in range(round(enemy.spd/10)):
-			#debug = look
-			debug=str(enemy.name)+" turn"
-			while enemy.moves < enemy.atribute["spd"]:
-				moved = False
-				while moved == False:
-					look = rn.randrange(0,4)
-					if look == 0:
-						if grid[enemy.x+1][enemy.y] == 0 and enemy.x+1<w-1:
-							enemy.x+=1
-							moved=True
-					elif look == 1:
-						if grid[enemy.x-1][enemy.y] == 0 and enemy.x-1>0:
-							enemy.x-=1
-							moved=True
-					elif look ==2:
-						if grid[enemy.x][enemy.y+1] == 0 and enemy.y+1<h-1:
-							enemy.y+=1
-							moved=True
-					elif look ==3:
-						if grid[enemy.x][enemy.y-1] == 0 and enemy.y-1>0:
-							enemy.y-=1
-							moved=True
-					if moved==True:
-						os.system('clear')
-						display(grid)
-						print(debug)
-						time.sleep(1)
-						enemy.moves+=1
-			enemy.moves=0
+		#debug = look
+		debug=str(enemy.name)+" turn, moves ["+str(enemy.moves)+"/"+str(enemy.atribute["spd"])+"]"
+		while enemy.moves <= enemy.atribute["spd"]:
+			moved = False
+			while moved == False:
+				look = rn.randrange(0,4)
+				if look == 0:
+					if grid[enemy.x+1][enemy.y] == 0 and enemy.x+1<w-1:
+						enemy.x+=1
+						moved=True
+				elif look == 1:
+					if grid[enemy.x-1][enemy.y] == 0 and enemy.x-1>0:
+						enemy.x-=1
+						moved=True
+				elif look ==2:
+					if grid[enemy.x][enemy.y+1] == 0 and enemy.y+1<h-1:
+						enemy.y+=1
+						moved=True
+				elif look ==3:
+					if grid[enemy.x][enemy.y-1] == 0 and enemy.y-1>0:
+						enemy.y-=1
+						moved=True
+				if moved==True:
+					os.system('clear')
+					display(grid)
+					print(debug)
+					time.sleep(1)
+					enemy.moves+=1
+					debug=str(enemy.name)+" turn, moves ["+str(enemy.moves)+"/"+str(enemy.atribute["spd"])+"]"
+		enemy.moves=0
 	os.system('clear')
 
 def spawn_player(w,h):
@@ -209,28 +209,45 @@ def appraisal(x,y):
 
 
 
-def player_controller(cursor_active,cursor_position,debug):
+def player_controller(cursor_active,cursor_position):
+	debug=""
+	if player.moves > player.atribute["spd"]-1:
+		player.turn=False
+		player.moves=0
 	if cursor_active == False and player.turn == True:
+		debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 		if keypress == 'l':
 			if(grid[player.x+1][player.y]!=1):
 				player.x+=1;
 				player.moves+=1;
+				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+			else:
+				debug="this direction is obstucted by a wall"
 				#add (player move +=1, if move > spd: enemy move)
 				#debug = "Move Right"
 		if keypress == 'h':
 			if(grid[player.x-1][player.y]!=1):
 				player.x-=1;
 				player.moves+=1;
+				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+			else:
+				debug="this direction is obstucted by a wall"
 				#debug = "Move Left"
 		if keypress == 'j':
 			if(grid[player.x][player.y-1]!=1):
 				player.y-=1;
 				player.moves+=1;
+				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+			else:
+				debug="this direction is obstucted by a wall"
 				#debug = "Move Up"
 		if keypress == 'k':
 			if(grid[player.x][player.y+1]!=1):
 				player.y+=1;
 				player.moves+=1;
+				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+			else:
+				debug="this direction is obstucted by a wall"
 				#debug = "Move Down"
 		if grid[xx][yy] == 2:
 			debug = "Ladder"
@@ -239,14 +256,14 @@ def player_controller(cursor_active,cursor_position,debug):
 				#when using ladder save floor current floor and generate next floor, or load previus.
 			else :
 				choice = input("Ladder available action (down,nothing)")
-		if keypress == ';':
-			cursor_active = True
-			cursor_position=[player.x,player.y]
-		if player.moves > player.atribute["spd"]:
-			debug=str(player.moves)+" spd: "+str(player.atribute["spd"])
-			player.turn=False
-			player.moves=0
-	elif player.turn == True:
+	if keypress == ';':
+		cursor_active = True
+		cursor_position=[player.x,player.y]
+	if player.moves >= player.atribute["spd"]:
+		debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+		debug+="\nend of turn?"
+
+	elif player.turn == True and cursor_active == True:
 		if keypress == 'l' and cursor_position[0]<w-1:
 			cursor_position[0]+=1;
 				#debug = "Move Right"
@@ -287,7 +304,7 @@ display(grid)
 
 while True:
 	keypress = main()
-	cursor_active,cursor_position,debug = player_controller(cursor_active,cursor_position,debug)
+	cursor_active,cursor_position,debug = player_controller(cursor_active,cursor_position)
 
 	#permenent controlle
 	if keypress == '\x1b':
@@ -298,6 +315,5 @@ while True:
 	if player.turn == False:
 		enemy_movement()
 		player.turn=True
-		debug=str(player.name)+" turn"
 	display(grid)
 	print(str(debug))
