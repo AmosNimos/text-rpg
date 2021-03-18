@@ -174,7 +174,7 @@ def spawn_player(w,h):
 	elif(yy>1):
 		grid[xx][yy-1] = 2
 	else:
-		spawn()
+		pass
 	return grid
 
 def spawn(target):
@@ -256,12 +256,14 @@ def player_controller(cursor_active,cursor_position):
 				#when using ladder save floor current floor and generate next floor, or load previus.
 			else :
 				choice = input("Ladder available action (down,nothing)")
-	if keypress == ';':
-		cursor_active = True
-		cursor_position=[player.x,player.y]
-	if player.moves >= player.atribute["spd"]:
-		debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
-		debug+="\nend of turn?"
+		if keypress == ';':
+			cursor_position=[player.x,player.y]
+			cursor_active = True
+			debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
+
+		if player.moves >= player.atribute["spd"]:
+			debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+			debug+="\nend of turn?"
 
 	elif player.turn == True and cursor_active == True:
 		if keypress == 'l' and cursor_position[0]<w-1:
@@ -270,8 +272,8 @@ def player_controller(cursor_active,cursor_position):
 		if keypress == 'h' and cursor_position[0]>0:
 			cursor_position[0]-=1;
 				#debug = "Move Left"
-		if keypress == 'j':
-			cursor_position[1]-=1 and cursor_position[1]>0;
+		if keypress == 'j' and cursor_position[1]>0:
+			cursor_position[1]-=1;
 				#debug = "Move Up"
 		if keypress == 'k'  and cursor_position[1]<h-2:
 			cursor_position[1]+=1;
