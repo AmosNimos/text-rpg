@@ -1,8 +1,16 @@
 import ui
 from termcolor import colored, cprint
 from random import *
+import math
+import time
 
 line = ui.gen_line("+","-")
+
+def dist_p(x1,y1,x2,y2):
+	dis = round(math.sqrt((x2-x1)**2+(y2-y1)**2))
+	return dis
+
+
 def battle(player,opponent,turn):
 	#battle_menu(player,opponent)
 	skills_menu(player,opponent)
@@ -27,10 +35,11 @@ def battle_menu(player,opponents):
 
 def field(player,opponent):
 		ui.clear()
-		print(str(randint(0,200)))
 		print(line)
 		ui.stats(opponent)
 		print("")
+		distance = dist_p(opponent.x,opponent.y,player.x,player.y)
+		print(ui.margin+"Distance <--["+str(distance)+"]-->")
 		print("")
 		ui.stats(player)
 		print(line)
@@ -38,10 +47,19 @@ def field(player,opponent):
 def playermove(player,opponent):
 	entry = int(input(">"))
 	ui.clear()
+	distance=0
 	field(player,opponent)
 	if entry <= len(player.skills):
-		player.use_skill(player.skills[entry],opponent,player,opponent)
-		player.moves +=1;
+		distance = dist_p(opponent.x,opponent.y,player.x,player.y)
+		skill_range = player.skills[entry]["range"]
+		if distance<=skill_range:
+			player.use_skill(player.skills[entry],opponent,player,opponent)
+			player.moves +=1;
+		else:
+			text = player.skills[entry]["name"]+" miss, "+opponent.name+" out of range"
+			ui.delay_text(text,True,True)
+			time.sleep(0.25)
+			player.moves +=1;
 
 def skills_menu(player,opponent):
 	field(player,opponent)

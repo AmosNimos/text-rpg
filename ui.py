@@ -20,13 +20,16 @@ def clear():
 
 
 def stats(entity):
+	status_effects=""
 	bar_size=cols/1.5
 	print(margin+"["+entity.name+"][LV:"+str(entity.lv)+"]")
 	hp_bar = gen_bar("HP",entity.hp,entity.max_hp,">",".","green",bar_size) # health
 	sp_bar = gen_bar("SP",entity.sp,entity.max_sp,">",".","yellow",bar_size) # stamina
 	mp_bar = gen_bar("MP",entity.mp,entity.max_mp,">",".","blue",bar_size) # magic
 	print(hp_bar+"\n"+sp_bar+"\n"+mp_bar)
-	print(margin+"SE["+str(entity.status_effects)+"]") #status effect
+	for status in entity.se:
+		status_effects+=str(status["type"])+", lv."+str(status["level"])+" last."+str(status["last"])
+	print(margin*2+"[status:"+str(status_effects)+"]") #status effect
 
 def gen_line(side,middle):
 	line=side

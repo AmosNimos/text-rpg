@@ -24,7 +24,7 @@ class Monster:
 		self.moves=0
 		#stamina how long you can use your full speed bedor it decrease to one move per turn, befor each move remove health.
 		#each spiecies have their own random atribute rules.
-		self.status_effects=[] #se
+		self.se=[] #status effect
 		self.x = 0
 		self.y = 0
 		self.experience=0 #xp
