@@ -113,12 +113,21 @@ def update_player(xx,yy):
 	player.x = xx
 	player.y = yy
 
+def check_for_entities(x,y,user):
+	r = False
+	for enemy in adversary:
+		if enemy.x == x and enemy.y == y and enemy != user:
+			r = True
+	if enemy.x == player.x and enemy.y == player.y and player != user:
+		r = True
+	return r
+
 def spawn_enemy(w,h):
 	#player spawn
 	for enemy in adversary:
 		xx=rn.randrange(1,w-1)
 		yy=rn.randrange(1,h-1)
-		while grid[xx][yy] != 0:
+		while grid[xx][yy] != 0 or check_for_entities(xx,yy,enemy)==True:
 			xx=rn.randrange(1,w-1)
 			yy=rn.randrange(1,h-1)
 		enemy.x=xx
@@ -134,20 +143,24 @@ def enemy_movement():
 				look = rn.randrange(0,4)
 				if look == 0:
 					if grid[enemy.x+1][enemy.y] == 0 and enemy.x+1<w-1:
-						enemy.x+=1
-						moved=True
+						if check_for_entities(enemy.x+1,enemy.y,enemy) == False:
+							enemy.x+=1
+							moved=True
 				elif look == 1:
 					if grid[enemy.x-1][enemy.y] == 0 and enemy.x-1>0:
-						enemy.x-=1
-						moved=True
+						if check_for_entities(enemy.x-1,enemy.y,enemy) == False:
+							enemy.x-=1
+							moved=True
 				elif look ==2:
 					if grid[enemy.x][enemy.y+1] == 0 and enemy.y+1<h-1:
-						enemy.y+=1
-						moved=True
+						if check_for_entities(enemy.x,enemy.y+1,enemy) == False:
+							enemy.y+=1
+							moved=True
 				elif look ==3:
 					if grid[enemy.x][enemy.y-1] == 0 and enemy.y-1>0:
-						enemy.y-=1
-						moved=True
+						if check_for_entities(enemy.x,enemy.y-1,enemy) == False:
+							enemy.y-=1
+							moved=True
 				if moved==True:
 					os.system('clear')
 					display(grid)
@@ -242,34 +255,45 @@ def player_controller(cursor_active,cursor_position):
 		debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 		if keypress == 'l' and player.x<w-1:
 			if(grid[player.x+1][player.y]!=1):
-				player.x+=1;
-				player.moves+=1;
-				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				if check_for_entities(player.x+1,player.y,player) == False:
+					player.x+=1;
+					player.moves+=1;
+					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				else:
+					debug="this direction is obstucted by a creature"
 			else:
 				debug="this direction is obstucted by a wall"
-				#add (player move +=1, if move > spd: enemy move)
 				#debug = "Move Right"
 		if keypress == 'h' and player.x>0:
 			if(grid[player.x-1][player.y]!=1):
-				player.x-=1;
-				player.moves+=1;
-				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				if check_for_entities(player.x-1,player.y,player) == False:
+					player.x-=1;
+					player.moves+=1;
+					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				else:
+					debug="this direction is obstucted by a creature"
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Left"
 		if keypress == 'j' and player.y>0:
 			if(grid[player.x][player.y-1]!=1):
-				player.y-=1;
-				player.moves+=1;
-				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				if check_for_entities(player.x,player.y-1,player) == False:
+					player.y-=1;
+					player.moves+=1;
+					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				else:
+					debug="this direction is obstucted by a creature"
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Up"
 		if keypress == 'k' and player.y<h-2:
 			if(grid[player.x][player.y+1]!=1):
-				player.y+=1;
-				player.moves+=1;
-				debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				if check_for_entities(player.x,player.y+1,player) == False:
+					player.y+=1;
+					player.moves+=1;
+					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+				else:
+					debug="this direction is obstucted by a creature"
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Down"
