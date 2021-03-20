@@ -44,8 +44,8 @@ def field(player,opponent):
 		ui.stats(player)
 		print(line)
 
-def playermove(player,opponent):
-	entry = int(input(">"))
+def playermove(player,opponent,entry):
+	#entry = int(input(">"))
 	ui.clear()
 	distance=0
 	field(player,opponent)
@@ -65,9 +65,10 @@ def skills_menu(player,opponent):
 	field(player,opponent)
 	if opponent.hp>0 and player.hp>0:
 		if player.turn == True:
-			print(ui.skills_options(player))
+			text,cursor = ui.skills_options(player)
+			print(text)
 			print(line)
-			playermove(player,opponent)
+			playermove(player,opponent,cursor)
 		else:
 			entry = opponent.skills[round(randrange(len(opponent.skills)))]
 			opponent.use_skill(entry,player,player,opponent)

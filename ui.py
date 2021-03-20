@@ -5,6 +5,7 @@ import time
 import subprocess
 from termcolor import colored, cprint
 from playsound import playsound
+from curtsies import Input
 #import shlex
 
 size = os.get_terminal_size() 
@@ -18,6 +19,10 @@ def play(sound):
 def clear():
 	os.system('clear')
 
+def main():
+	with Input(keynames='curses') as input_generator:
+		for e in input_generator:
+			return e
 
 def stats(entity):
 	status_effects=""
@@ -93,11 +98,31 @@ def gen_title(side,middle,text):
 def skills_options(target):
 	line=""
 	skills = target.skills
-	for x in range(len(skills)):
-		line += margin+"["+str(x)+"] "+str(skills[x]["name"])
-		if x<len(skills)-1:
-			line+="\n"
-	return line
+	cursor=0
+	keypress=""
+	while keypress != ";":
+		keypress = main()
+		if keypress=="k":
+			if cursor<len(skills)-1:
+				cursor+=1
+			else:
+				cursor=0;
+		if keypress=="j":
+			if cursor==0:
+				cursor=len(skills)-1
+			else:
+				cursor-=1;
+		for x in range(len(skills)):
+			if cursor == x:
+				line += margin+"[*] "+str(skills[x]["name"])
+			else:
+				line += margin+"["+str(x)+"] "+str(skills[x]["name"])
+			if x<len(skills)-1:
+				line+="\n"
+		clear()
+		print(line)
+		line=""
+	return line,cursor
 
 def gen_options(options):
 	line=""
