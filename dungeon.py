@@ -19,7 +19,11 @@ wall_symbol = "#"
 empty_symbol = "."
 enemy_symbol = "&"
 debug=""
+dungeon_floor=1
 
+scale = [0.5,1,1.5,2]
+monster_rank = ["Small","Regular","Large","Giant"]
+adversary = []
 #rows == height
 w = int((rows)-8)
 h = w
@@ -27,9 +31,32 @@ cursor_active=False
 cursor_position = [0,0]
 
 player = entities.Spider("Player",True)
-enemy1 = entities.Insect("Bugs",False)
-enemy2 = entities.Insect("Big Bug",False)
-adversary = [enemy1,enemy2]
+
+def gen_enemy():
+	amounth = round(w/3)
+	print(amounth)
+	enemy=[]
+	for index in range(amounth):
+		power=0
+		size_index = round(rn.randint(0,3))
+		size = scale[size_index]
+		enemy.append(entities.Insect(str(monster_rank[size_index])+" Bug",False))
+		value = rn.randint(2,16)
+		power+=value
+		enemy[index].max_hp = round(dungeon_floor*value*size)
+		enemy[index].hp = enemy[index].max_hp
+		value = rn.randint(1,8)
+		power+=value
+		enemy[index].max_sp = round(dungeon_floor*value*size)
+		enemy[index].sp = enemy[index].max_sp
+		value = rn.randint(0,4)
+		power+=value
+		enemy[index].max_mp = round(dungeon_floor*value*size)
+		enemy[index].mp = enemy[index].max_mp
+		enemy[index].lv = round(dungeon_floor+power/3)
+	return enemy
+		#enemy.hp = max_hp
+
 
 #0=empty, 1=wall, 2=stair
 def display(grid):
@@ -364,6 +391,7 @@ def player_controller(cursor_active,cursor_position):
 	return cursor_active,cursor_position,debug
 
 
+adversary = gen_enemy()
 grid = gen_grid(w,h)
 grid = gen_wall()
 grid = gen_automata()
@@ -391,6 +419,7 @@ while True:
 	os.system('clear')
 	if player.turn == False:
 		enemy_movement()
+		debug=player.name+" turn"
 		player.turn=True
 	display(grid)
 	print(str(debug))

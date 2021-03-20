@@ -1,0 +1,4 @@
+enemy monster attack
+generate enemy monster (proportional to dungeon size)
+changing dungeon floor (save up to 5 previus floor) (seal previus path warning)
+add randomness to attack and stuff like dmg*random(0.5,1.5)

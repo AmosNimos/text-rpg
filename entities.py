@@ -22,13 +22,13 @@ class Monster:
 		self.turn=player
 		self.atribute={"spd":0,"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}
 		self.moves=0
+		self.titles=[]
 		#stamina how long you can use your full speed bedor it decrease to one move per turn, befor each move remove health.
 		#each spiecies have their own random atribute rules.
 		self.se=[] #status effect
 		self.x = 0
 		self.y = 0
 		self.experience=0 #xp
-		self.spd = 20
 		self.age = 1
 		# longevity depend on the species
 		self.longevity=0
