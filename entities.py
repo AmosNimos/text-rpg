@@ -39,7 +39,8 @@ class Monster:
 			self.hp-=skill["cost_hp"]
 			self.sp-=skill["cost_sp"]
 			self.mp-=skill["cost_mp"]
-			battle.field(player,opponent)
+			ui.clear()
+			print(battle.field(player,opponent))
 			#add a miss parameter
 			#print(skill["name"]+"consume "+str(skill["cost_hp"])+" hp, "+str(skill["cost_sp"])+" sp, "+str(skill["cost_mp"])+" mp.")
 			text = self.name+" use "+skill["name"]+"."
@@ -48,7 +49,8 @@ class Monster:
 			target.hp-=skill["affect_hp"]
 			target.sp-=skill["affect_sp"]
 			target.mp-=skill["affect_mp"]
-			battle.field(player,opponent)
+			ui.clear()
+			print(battle.field(player,opponent))
 			text = target.name+" get hit by "+skill["name"]+"."
 			ui.play("data/hit.wav")
 			ui.delay_text(text,True,True)

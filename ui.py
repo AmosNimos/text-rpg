@@ -24,17 +24,67 @@ def main():
 		for e in input_generator:
 			return e
 
+def menu(options,names,head):
+	cursor=0
+	keypress=""
+	line=""
+
+	#initialise menu
+	for x in range(len(names)):
+		if cursor == x:
+			line += margin+"[*] "+str(names[x])
+		else:
+			line += margin+"["+str(x)+"] "+str(names[x])
+		if x<len(names)-1:
+			line+="\n"
+	clear()
+	print(head)
+	print(line)
+	line=""
+
+	#update menu
+	while keypress != ";":
+		keypress = main()
+		if keypress=="k":
+			if cursor<len(options)-1:
+				cursor+=1
+			else:
+				cursor=0;
+		if keypress=="j":
+			if cursor==0:
+				cursor=len(options)-1
+			else:
+				cursor-=1;
+		for x in range(len(names)):
+			if cursor == x:
+				line += margin+"[*] "+str(names[x])
+			else:
+				line += margin+"["+str(x)+"] "+str(names[x])
+			if x<len(names)-1:
+				line+="\n"
+		clear()
+		print(head)
+		print(line)
+		line=""
+
+	for option in range(len(options)):
+		if cursor == option:
+			return options[option]
+	return "error"
+
 def stats(entity):
+	render=""
 	status_effects=""
 	bar_size=cols/1.5
-	print(margin+"["+entity.name+"][LV:"+str(entity.lv)+"]")
+	render+=margin+"["+entity.name+"][LV:"+str(entity.lv)+"]\n"
 	hp_bar = gen_bar("HP",entity.hp,entity.max_hp,">",".","green",bar_size) # health
 	sp_bar = gen_bar("SP",entity.sp,entity.max_sp,">",".","yellow",bar_size) # stamina
 	mp_bar = gen_bar("MP",entity.mp,entity.max_mp,">",".","blue",bar_size) # magic
-	print(hp_bar+"\n"+sp_bar+"\n"+mp_bar)
+	render+=hp_bar+"\n"+sp_bar+"\n"+mp_bar+"\n"
 	for status in entity.se:
 		status_effects+=str(status["type"])+", lv."+str(status["level"])+" last."+str(status["last"])
-	print(margin*2+"[status:"+str(status_effects)+"]") #status effect
+	render+=margin*2+"[status:"+str(status_effects)+"]\n" #status effect
+	return render
 
 def gen_line(side,middle):
 	line=side
@@ -94,40 +144,6 @@ def gen_title(side,middle,text):
 		line+=middle
 	line+=side
 	return line
-
-def menu_selection(options,names):
-	#print("entrys: \nstart\nquit")
-	#entry = input(">")
-	#options can be skills or function in a list
-	cursor=0
-	keypress=""
-	while keypress != ";":
-		keypress = main()
-		if keypress=="k":
-			if cursor<len(options)-1:
-				cursor+=1
-			else:
-				cursor=0;
-		if keypress=="j":
-			if cursor==0:
-				cursor=len(options)-1
-			else:
-				cursor-=1;
-		for x in range(len(skills)):
-			if cursor == x:
-				line += margin+"[*] "+str(names[x])
-			else:
-				line += margin+"["+str(x)+"] "+str(names[x])
-			if x<len(skills)-1:
-				line+="\n"
-		clear()
-		print(line)
-		line=""
-
-	for option in range(options):
-		if cursor == option:
-			return options[option]
-	return "error"
 
 def skills_options(target):
 	line=""

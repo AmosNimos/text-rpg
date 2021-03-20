@@ -17,7 +17,7 @@ player_symbol = "@"
 stair_symbol = "H"
 wall_symbol = "#"
 empty_symbol = "."
-enemy_symbol = "*"
+enemy_symbol = "&"
 debug=""
 
 #rows == height
@@ -45,12 +45,12 @@ def display(grid):
 					if x == enemy.x and y == enemy.y:
 						creature=True
 				if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
-					linetxt+=" "+colored("?",'white')
+					linetxt+=" "+colored("?",'green')
 				elif(x==player.x and y==player.y):
 					#display player
-					linetxt+=" "+colored(player_symbol,'white')
+					linetxt+=" "+colored(player_symbol,'green', 'on_cyan')
 				elif creature == True:
-					linetxt+=" "+colored(enemy_symbol,'red')
+					linetxt+=" "+colored(enemy_symbol,'red','on_magenta')
 				elif(grid[x][y]==0):
 					linetxt+=" "+colored(empty_symbol,'white')
 				elif(grid[x][y]==1):

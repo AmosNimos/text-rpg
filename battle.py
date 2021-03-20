@@ -34,41 +34,48 @@ def battle_menu(player,opponents):
 		print(opponents[entry].name+" is already dead...")
 
 def field(player,opponent):
-		ui.clear()
-		print(line)
-		ui.stats(opponent)
-		print("")
+		render=""
+		render+=line+"\n"
+		render+=ui.stats(opponent)+"\n"
+		render+="\n"
 		distance = dist_p(opponent.x,opponent.y,player.x,player.y)
-		print(ui.margin+"Distance <--["+str(distance)+"]-->")
-		print("")
-		ui.stats(player)
-		print(line)
+		render+=ui.margin+"Distance <--["+str(distance)+"]-->\n"
+		render+="\n"
+		render+=ui.stats(player)+"\n"
+		render+=line
+		return render
 
 def playermove(player,opponent,entry):
 	#entry = int(input(">"))
 	ui.clear()
 	distance=0
 	field(player,opponent)
-	if entry <= len(player.skills):
-		distance = dist_p(opponent.x,opponent.y,player.x,player.y)
-		skill_range = player.skills[entry]["range"]
-		if distance<=skill_range:
-			player.use_skill(player.skills[entry],opponent,player,opponent)
-			player.moves +=1;
-		else:
-			text = player.skills[entry]["name"]+" miss, "+opponent.name+" out of range"
-			ui.delay_text(text,True,True)
-			time.sleep(0.25)
-			player.moves +=1;
+	distance = dist_p(opponent.x,opponent.y,player.x,player.y)
+	skill_range = entry["range"]
+	if distance<=skill_range:
+		player.use_skill(entry,opponent,player,opponent)
+		player.moves +=1;
+	else:
+		text = entry["name"]+" miss, "+opponent.name+" out of range"
+		ui.delay_text(text,True,True)
+		time.sleep(0.25)
+		player.moves +=1;
+
 
 def skills_menu(player,opponent):
-	field(player,opponent)
+	ui.clear()
+	head=""
+	head = field(player,opponent)
+	print(head)
 	if opponent.hp>0 and player.hp>0:
 		if player.turn == True:
-			text,cursor = ui.skills_options(player)
-			print(text)
+			skills_names = []
+			for skill in player.skills:
+				skills_names.append(skill["name"])
+			entry = ui.menu(player.skills,skills_names,head)
+			#text = ui.skills_options(player)
 			print(line)
-			playermove(player,opponent,cursor)
+			playermove(player,opponent,entry)
 		else:
 			entry = opponent.skills[round(randrange(len(opponent.skills)))]
 			opponent.use_skill(entry,player,player,opponent)
