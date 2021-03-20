@@ -115,12 +115,15 @@ def update_player(xx,yy):
 
 def check_for_entities(x,y,user):
 	r = False
+	e=""
 	for enemy in adversary:
 		if enemy.x == x and enemy.y == y and enemy != user:
 			r = True
+			e=enemy.name
 	if x == player.x and y == player.y and player != user:
 		r = True
-	return r
+		e=player.name
+	return r,e
 
 def spawn_enemy(w,h):
 	#player spawn
@@ -143,24 +146,36 @@ def enemy_movement():
 				look = rn.randrange(0,4)
 				if look == 0:
 					if grid[enemy.x+1][enemy.y] == 0 and enemy.x+1<w-1:
-						if check_for_entities(enemy.x+1,enemy.y,enemy) == False:
+						r,e = check_for_entities(enemy.x+1,enemy.y,enemy)
+						if r == False:
 							enemy.x+=1
 							moved=True
+						elif e == player.name:
+							print("attack")
 				elif look == 1:
 					if grid[enemy.x-1][enemy.y] == 0 and enemy.x-1>0:
-						if check_for_entities(enemy.x-1,enemy.y,enemy) == False:
+						r,e = check_for_entities(enemy.x-1,enemy.y,enemy)
+						if r == False:
 							enemy.x-=1
 							moved=True
+						elif e == player.name:
+							print("attack")
 				elif look ==2:
 					if grid[enemy.x][enemy.y+1] == 0 and enemy.y+1<h-1:
-						if check_for_entities(enemy.x,enemy.y+1,enemy) == False:
+						r,e = check_for_entities(enemy.x,enemy.y+1,enemy)
+						if r == False:
 							enemy.y+=1
 							moved=True
+						elif e == player.name:
+							print("attack")
 				elif look ==3:
 					if grid[enemy.x][enemy.y-1] == 0 and enemy.y-1>0:
-						if check_for_entities(enemy.x,enemy.y-1,enemy) == False:
+						r,e = check_for_entities(enemy.x,enemy.y-1,enemy)
+						if r == False:
 							enemy.y-=1
 							moved=True
+						elif e == player.name:
+							print("attack")
 				if moved==True:
 					os.system('clear')
 					display(grid)
@@ -255,45 +270,49 @@ def player_controller(cursor_active,cursor_position):
 		debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 		if keypress == 'l' and player.x<w-1:
 			if(grid[player.x+1][player.y]!=1):
-				if check_for_entities(player.x+1,player.y,player) == False:
+				r,e = check_for_entities(player.x+1,player.y,player)
+				if r == False:
 					player.x+=1;
 					player.moves+=1;
 					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 				else:
-					debug="this direction is obstucted by a creature"
+					debug="this direction is obstucted by a "+str(e)
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Right"
 		if keypress == 'h' and player.x>0:
 			if(grid[player.x-1][player.y]!=1):
-				if check_for_entities(player.x-1,player.y,player) == False:
+				r,e = check_for_entities(player.x-1,player.y,player)
+				if r == False:
 					player.x-=1;
 					player.moves+=1;
 					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 				else:
-					debug="this direction is obstucted by a creature"
+					debug="this direction is obstucted by a "+str(e)
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Left"
 		if keypress == 'j' and player.y>0:
 			if(grid[player.x][player.y-1]!=1):
-				if check_for_entities(player.x,player.y-1,player) == False:
+				r,e = check_for_entities(player.x,player.y-1,player)
+				if r == False:
 					player.y-=1;
 					player.moves+=1;
 					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 				else:
-					debug="this direction is obstucted by a creature"
+					debug="this direction is obstucted by a "+str(e)
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Up"
 		if keypress == 'k' and player.y<h-2:
 			if(grid[player.x][player.y+1]!=1):
-				if check_for_entities(player.x,player.y+1,player) == False:
+				r,e = check_for_entities(player.x,player.y+1,player)
+				if r == False:
 					player.y+=1;
 					player.moves+=1;
 					debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 				else:
-					debug="this direction is obstucted by a creature"
+					debug="this direction is obstucted by a "+str(e)
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Down"

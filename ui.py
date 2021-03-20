@@ -95,6 +95,40 @@ def gen_title(side,middle,text):
 	line+=side
 	return line
 
+def menu_selection(options,names):
+	#print("entrys: \nstart\nquit")
+	#entry = input(">")
+	#options can be skills or function in a list
+	cursor=0
+	keypress=""
+	while keypress != ";":
+		keypress = main()
+		if keypress=="k":
+			if cursor<len(options)-1:
+				cursor+=1
+			else:
+				cursor=0;
+		if keypress=="j":
+			if cursor==0:
+				cursor=len(options)-1
+			else:
+				cursor-=1;
+		for x in range(len(skills)):
+			if cursor == x:
+				line += margin+"[*] "+str(names[x])
+			else:
+				line += margin+"["+str(x)+"] "+str(names[x])
+			if x<len(skills)-1:
+				line+="\n"
+		clear()
+		print(line)
+		line=""
+
+	for option in range(options):
+		if cursor == option:
+			return options[option]
+	return "error"
+
 def skills_options(target):
 	line=""
 	skills = target.skills
@@ -132,31 +166,27 @@ def gen_options(options):
 			line+="\n"
 	return line
 
-def main_menu_selection():
-	#print("entrys: \nstart\nquit")
-	entry = input(">")
-	if entry.lower() == "0":
-		os.system('clear')
-	elif entry.lower() == "1":
-		os.system('clear')
-		help_game()
-	elif entry.lower() == "2":
-		os.system('clear')
-		exit_game()
-	while entry.lower() not in ["0","1","2"]:
-		os.system('clear')
-		main_menu()
+
 
 def main_menu():
 	line = gen_line("+","-")
 	title = gen_title("|"," ","game title")
+	option = gen_title(""," ","[START]")
+	keypress=""
+	clear()
 	print(line)
 	print(title)
 	print(line)
-	actions=["Play","Help","Quit"]
-	print(gen_options(actions))
+	print(option)
 	print(line)
-	main_menu_selection()
+	while keypress != ";":
+		keypress = main()
+		clear()
+		print(line)
+		print(title)
+		print(line)
+		print(option)
+		print(line)
 
 def game_over():
 	line = gen_line("+","-")
