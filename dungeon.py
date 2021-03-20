@@ -118,7 +118,7 @@ def check_for_entities(x,y,user):
 	for enemy in adversary:
 		if enemy.x == x and enemy.y == y and enemy != user:
 			r = True
-	if enemy.x == player.x and enemy.y == player.y and player != user:
+	if x == player.x and y == player.y and player != user:
 		r = True
 	return r
 
