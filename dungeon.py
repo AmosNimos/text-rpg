@@ -16,12 +16,24 @@ xx=0
 yy=0
 grid=[]
 adversary = []
-player_symbol = "@"
-stair_symbol = "H"
-wall_symbol = "#"
-empty_symbol = "."
-enemy_symbol = "&"
+#player_symbol = "@"
+#player_symbol = "◉"
+player_symbol = "●"
+#stair_symbol = "H"
+stair_symbol = "☰"
+#rope = "┇"
+#wall_symbol = "#"
+#wall_symbol = "▣"
+#wall_symbol = "▢"
+wall_symbol = "▧"
+#empty_symbol = "."
+empty_symbol = "·"
+#enemy_symbol = "&"
+#enemy_symbol = "◆"
+enemy_symbol = "✕"
 door_symbol = "+"
+#cursor_symbol ="?"
+cursor_symbol ="▼"
 debug=""
 dungeon_floor=1
 
@@ -58,12 +70,12 @@ def display(grid):
 				if x == enemy.x and y == enemy.y:
 					creature=True
 			if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
-				linetxt+=" "+colored("?",'green')
+				linetxt+=" "+colored(cursor_symbol,'green')
 			elif(x==player.x and y==player.y):
 				#display player
-				linetxt+=" "+colored(player_symbol,'green', 'on_cyan')
+				linetxt+=" "+colored(player_symbol,'green')
 			elif creature == True:
-				linetxt+=" "+colored(enemy_symbol,'red','on_magenta')
+				linetxt+=" "+colored(enemy_symbol,'red')
 			elif(grid[x][y]==0):
 				linetxt+=" "+colored(empty_symbol,'white')
 			elif(grid[x][y]==1):
@@ -410,9 +422,14 @@ def spawn_enemy():
 #gen dungeon floor
 entry = ""
 name = ""
-letter=['ok','del','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+letters=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+letters += [" ",".","-","?","&","$","☠"]
+letters += ["0","1","2","3","4","5","6","7","8","9"]
+letters += ['del','ok']
+#print(str(len(letters))+":"+str(letters))
 while entry != "ok":
-	entry = ui.menu(letter,letter,"NAME:"+str(name))
+	entry = ui.menu(letters,letters,"NAME:"+str(name))
+	#ui.axis_menu(letters,letters,"enter name:"+str(name))
 	if entry == 'del':
 		name=""
 	elif entry != 'ok':
@@ -425,7 +442,10 @@ adversary = gen_enemy()
 grid = gen_grid(w,h)
 grid = gen_wall()
 grid = gen_automata()
-grid = gen_symetry()
+try:
+	grid = gen_symetry()
+except:
+	pass
 grid = spawn_player(w,h)
 spawn_enemy()
 os.system('clear')

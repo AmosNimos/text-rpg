@@ -6,6 +6,7 @@ import subprocess
 from termcolor import colored, cprint
 from playsound import playsound
 from curtsies import Input
+import numpy as np
 #import shlex
 
 size = os.get_terminal_size() 
@@ -24,6 +25,64 @@ def main():
 		for e in input_generator:
 			return e
 
+def axis_menu(options,names,head):
+	h=5
+	w=round(len(names)/h)
+	names = np.reshape(names, (h, w))
+	cursor=[0,0]
+	keypress=""
+	line=""
+	view_range=4
+	back_view=4
+	#initialise menu
+	n=0
+	for y in range(h):
+		for x in range(w):
+			if cursor[0] == x and cursor[1]== y:
+				line += margin+"["+str(names[y,x])+"]"
+			else:
+				line += margin+"("+str(names[y,x])+")"
+			n+=1
+		line+="\n"
+
+	clear()
+	print(head)
+	print(line)
+	line=""
+
+	#update menu
+	while keypress != ";":
+		more=False
+		keypress = main()
+		if keypress=="k":
+			if cursor[0]<len(options[1])-1:
+				cursor[0]+=1
+			else:
+				cursor[0]=0;
+		if keypress=="j":
+			if cursor[0]==0:
+				cursor[0]=len(options[1])-1
+			else:
+				cursor[0]-=1;
+		n=0
+		for y in range(h):
+			for x in range(w):
+				if cursor[0] == x and cursor[1]==y:
+					line += margin+"["+str(names[y,x])+"]"
+				else:
+					line += margin+"("+str(names[y,x])+")"
+				n+=1
+			line+="\n"
+		clear()
+		print(head)
+		print(line)
+		line=""
+
+	for option in range(len(options)):
+		if cursor == option:
+			return options[option]
+	return "error"
+
 def menu(options,names,head):
 	cursor=0
 	keypress=""
@@ -34,12 +93,13 @@ def menu(options,names,head):
 	for x in range(len(names)):
 		if x<cursor+view_range and x>=cursor:
 			if cursor == x:
-				line += margin+"[+] "+str(names[x])
+				line += margin+"[▸] "+str(names[x])
+				#line += margin+"[+] "+str(names[x])
 			else:
-				line += margin+"[-] "+str(names[x])
+				line += margin+"[▫] "+str(names[x])
+				#line += margin+"[-] "+str(names[x])
 			if x<len(names)-1:
 				line+="\n"
-
 	clear()
 	print(head)
 	print(line)
@@ -65,9 +125,9 @@ def menu(options,names,head):
 		for x in range(len(names)):
 			if x<cursor+view_range and x>=cursor-back_view:
 				if cursor == x:
-					line += margin+"[+] "+str(names[x])
+					line += margin+"[▸] "+str(names[x])
 				else:
-					line += margin+"[-] "+str(names[x])
+					line += margin+"[▫] "+str(names[x])
 				if x<len(names)-1:
 					line+="\n"
 			if len(names)>cursor+view_range:
