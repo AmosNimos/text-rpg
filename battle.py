@@ -49,7 +49,7 @@ def playermove(player,opponent,entry):
 	#entry = int(input(">"))
 	ui.clear()
 	distance=0
-	field(player,opponent)
+	print(field(player,opponent))
 	distance = dist_p(opponent.x,opponent.y,player.x,player.y)
 	skill_range = entry["range"]
 	if distance<=skill_range:

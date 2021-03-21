@@ -189,20 +189,28 @@ def main_menu():
 	title = gen_title("|"," ","game title")
 	option = gen_title(""," ","[START]")
 	keypress=""
+	head = ""
 	clear()
-	print(line)
-	print(title)
-	print(line)
-	print(option)
-	print(line)
-	while keypress != ";":
-		keypress = main()
+	head += line+"\n"
+	head += title+"\n"
+	head += line
+	entry = menu([0,1,2],["start","help","exit"],head)
+	if entry == 2:
+		exit()
+	elif entry == 1:
 		clear()
-		print(line)
-		print(title)
-		print(line)
-		print(option)
-		print(line)
+		print("euh... use [h,j,k,l] to move and [;] to do other stuff.")
+		exit()
+	else:
+		clear()
+	# while keypress != ";":
+	# 	keypress = main()
+	# 	clear()
+	# 	print(line)
+	# 	print(title)
+	# 	print(line)
+	# 	print(option)
+	# 	print(line)
 
 def game_over():
 	line = gen_line("+","-")

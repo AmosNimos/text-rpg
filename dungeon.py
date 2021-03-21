@@ -12,17 +12,21 @@ import entities
 size = os.get_terminal_size() 
 cols = size[0]
 rows = size[1]
+xx=0
+yy=0
 grid=[]
+adversary = []
 player_symbol = "@"
 stair_symbol = "H"
 wall_symbol = "#"
 empty_symbol = "."
 enemy_symbol = "&"
+door_symbol = "+"
 debug=""
 dungeon_floor=1
 
 
-adversary = []
+
 #rows == height
 w = int((rows)-8)
 h = w
@@ -33,7 +37,6 @@ player = entities.Spider("Player",True,dungeon_floor)
 
 def gen_enemy():
 	amounth = round(w/3)
-	print(amounth)
 	enemy=[]
 	for index in range(amounth):
 		power=0
@@ -68,10 +71,11 @@ def display(grid):
 					linetxt+=" "+colored(wall_symbol,'white')
 				elif(grid[x][y]==2):
 					linetxt+=" "+colored(stair_symbol,'yellow')
+				elif(grid[x][y]==3):
+					linetxt+=" "+colored(door_symbol,'cyan')
 				#display monster here
 		except:
 			pass
-			#print("error")
 	print("")
 	print(gen_line("+","-"))
 
@@ -120,6 +124,32 @@ def gen_automata():
 				nebor=0
 	return grid
 
+def gen_symetry():
+	side=rn.randint(0,3)
+	if side == 1 or side == 3:
+		half_w = round(w)
+		half_h = round(h/2)
+		sym=rn.randint(0,1)
+		for x in range(half_h):
+			if rn.randint(0,sym)==0:
+				for y in range(half_w):
+					if grid[y][x] == 1:
+						grid[y][half_h+(half_h-x)]=1
+					elif grid[y][x] == 0:
+						grid[y][half_h+(half_h-x)]=0
+	if side == 2 or side == 3:
+		half_w = round(w/2)
+		half_h = round(h)
+		sym=rn.randint(0,1)
+		for y in range(half_w):
+			if rn.randint(0,sym)==0:
+				for x in range(half_h):
+					if grid[y][x] == 1:
+						grid[half_w+(half_w-y)][x]=1
+					elif grid[y][x] == 0:
+						grid[half_w+(half_w-y)][x]=0
+	return grid
+
 def update_player(xx,yy):
 	player.x = xx
 	player.y = yy
@@ -136,16 +166,7 @@ def check_for_entities(x,y,user):
 		e=player.name
 	return r,e
 
-def spawn_enemy(w,h):
-	#player spawn
-	for enemy in adversary:
-		xx=rn.randrange(1,w-1)
-		yy=rn.randrange(1,h-1)
-		while grid[xx][yy] != 0 or check_for_entities(xx,yy,enemy)==True:
-			xx=rn.randrange(1,w-1)
-			yy=rn.randrange(1,h-1)
-		enemy.x=xx
-		enemy.y=yy
+
 
 def enemy_movement():
 	for enemy in adversary:
@@ -232,9 +253,6 @@ def main():
 
 def appraisal(x,y):
 	# the amount of information of each apresal is equivalent to the wiz level, just like moves is equivalent to spd, the information are stored as string in list
-	print(x)
-	print(y)
-	print(grid[x][y])
 	if x == player.x and y == player.y:
 		return player.name
 	for enemy in adversary:
@@ -274,6 +292,7 @@ def check_for_wall(from_x,from_y,to_x,to_y):
 
 def player_controller(cursor_active,cursor_position):
 	debug=""
+	djf=dungeon_floor
 	if player.moves > player.atribute["spd"]-1:
 		player.turn=False
 		player.moves=0
@@ -342,7 +361,6 @@ def player_controller(cursor_active,cursor_position):
 		if player.moves >= player.atribute["spd"]:
 			debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 			debug+="\nend of turn?"
-
 	elif player.turn == True and cursor_active == True:
 		if keypress == 'l' and cursor_position[0]<w-1:
 			cursor_position[0]+=1;
@@ -358,6 +376,7 @@ def player_controller(cursor_active,cursor_position):
 			#cursor controller
 		debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
 		if keypress == ';':
+			ladder_down=False
 			for enemy in adversary:
 				if cursor_position[0] == enemy.x and cursor_position[1] == enemy.y:
 					if enemy.x == player.x or enemy.y == player.y:
@@ -369,32 +388,50 @@ def player_controller(cursor_active,cursor_position):
 					else:
 						#debug="uh... not sure about that."
 						debug=str(enemy.name)+" out of reach."
+				elif grid[cursor_position[0]][cursor_position[1]]==2:
+					ladder_down=True
+			if ladder_down == True:
+				djf=dungeon_floor+1
+
 			cursor_active = False
 	else:
 		print("...")
-	return cursor_active,cursor_position,debug
+	return cursor_active,cursor_position,debug,djf
 
+def spawn_enemy():
+	#player spawn
+	xx=0
+	yy=0
+	for enemy in adversary:
+		xx=rn.randrange(1,w-1)
+		yy=rn.randrange(1,h-1)
+		while grid[xx][yy] != 0 or check_for_entities(xx,yy,enemy)==True:
+			xx=rn.randrange(1,w-1)
+			yy=rn.randrange(1,h-1)
+		enemy.x=xx
+		enemy.y=yy
 
+#gen dungeon floor
 adversary = gen_enemy()
 grid = gen_grid(w,h)
 grid = gen_wall()
 grid = gen_automata()
-#Columns = []
-#Rows = []
-xx=0
-yy=0
-
+grid = gen_symetry()
 grid = spawn_player(w,h)
-spawn_enemy(w,h)
-
-
+spawn_enemy()
 os.system('clear')
 display(grid)
 
 while True:
 	keypress = main()
-	cursor_active,cursor_position,debug = player_controller(cursor_active,cursor_position)
-
+	current_floor=dungeon_floor
+	cursor_active,cursor_position,debug,dungeon_floor = player_controller(cursor_active,cursor_position)
+	if dungeon_floor>current_floor:
+		print("ladder up")
+		exit()
+	elif dungeon_floor<current_floor:
+		print("ladder down")
+		exit()
 	#permenent controlle
 	if keypress == '\x1b':
 		debug = "Exit"
