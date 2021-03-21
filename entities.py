@@ -114,6 +114,7 @@ class Insect(Monster):
 		self.atribute={"spd":2,"agi":4,"wiz":1,"str":1,"dex":4,"res":2,"sta":4}
 		if player == False:
 			self.lv=level
+			self.name=str(monster_rank[size_index])+" Bug"
 		else:
 			self.lv=1
 		value = rn.randint(2,16)
@@ -125,7 +126,6 @@ class Insect(Monster):
 		value = rn.randint(0,4)
 		self.max_mp = round(level*value*size)
 		self.mp = self.max_mp
-		self.name=str(monster_rank[size_index])+" Bug"
 
 class Spider(Insect):
 	def __init__(self,name,player,level):

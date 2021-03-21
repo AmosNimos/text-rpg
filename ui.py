@@ -28,15 +28,18 @@ def menu(options,names,head):
 	cursor=0
 	keypress=""
 	line=""
-
+	view_range=4
+	back_view=4
 	#initialise menu
 	for x in range(len(names)):
-		if cursor == x:
-			line += margin+"[*] "+str(names[x])
-		else:
-			line += margin+"["+str(x)+"] "+str(names[x])
-		if x<len(names)-1:
-			line+="\n"
+		if x<cursor+view_range and x>=cursor:
+			if cursor == x:
+				line += margin+"[+] "+str(names[x])
+			else:
+				line += margin+"[-] "+str(names[x])
+			if x<len(names)-1:
+				line+="\n"
+
 	clear()
 	print(head)
 	print(line)
@@ -44,6 +47,7 @@ def menu(options,names,head):
 
 	#update menu
 	while keypress != ";":
+		more=False
 		keypress = main()
 		if keypress=="k":
 			if cursor<len(options)-1:
@@ -55,13 +59,21 @@ def menu(options,names,head):
 				cursor=len(options)-1
 			else:
 				cursor-=1;
+
+		if cursor > back_view:
+			line += margin+"[-] <---\n"
 		for x in range(len(names)):
-			if cursor == x:
-				line += margin+"[*] "+str(names[x])
-			else:
-				line += margin+"["+str(x)+"] "+str(names[x])
-			if x<len(names)-1:
-				line+="\n"
+			if x<cursor+view_range and x>=cursor-back_view:
+				if cursor == x:
+					line += margin+"[+] "+str(names[x])
+				else:
+					line += margin+"[-] "+str(names[x])
+				if x<len(names)-1:
+					line+="\n"
+			if len(names)>cursor+view_range:
+				more=True
+		if more==True:
+			line += margin+"[-] --->"
 		clear()
 		print(head)
 		print(line)

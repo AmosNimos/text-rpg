@@ -3,7 +3,7 @@ import random as rn
 from termcolor import colored
 import os
 from curtsies import Input
-from ui import gen_line
+import ui
 import game
 import time
 import battle
@@ -28,12 +28,13 @@ dungeon_floor=1
 
 
 #rows == height
-w = int((rows)-8)
+if (int((rows)-8)) == 0:
+	w = int((rows)-8)
+else:
+	w = int((rows+1)-8)
 h = w
 cursor_active=False
 cursor_position = [0,0]
-
-player = entities.Spider("Player",True,dungeon_floor)
 
 def gen_enemy():
 	amounth = round(w/3)
@@ -47,37 +48,32 @@ def gen_enemy():
 
 #0=empty, 1=wall, 2=stair
 def display(grid):
-	#print(gen_line("+","-"))
 	linetxt=""
 	for y in range(len(grid)):
 		print(linetxt)
 		linetxt="  "
-		try:
-			for x in range(len(grid[y])):
-				creature=False
-				for enemy in adversary:
-					if x == enemy.x and y == enemy.y:
-						creature=True
-				if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
-					linetxt+=" "+colored("?",'green')
-				elif(x==player.x and y==player.y):
-					#display player
-					linetxt+=" "+colored(player_symbol,'green', 'on_cyan')
-				elif creature == True:
-					linetxt+=" "+colored(enemy_symbol,'red','on_magenta')
-				elif(grid[x][y]==0):
-					linetxt+=" "+colored(empty_symbol,'white')
-				elif(grid[x][y]==1):
-					linetxt+=" "+colored(wall_symbol,'white')
-				elif(grid[x][y]==2):
-					linetxt+=" "+colored(stair_symbol,'yellow')
-				elif(grid[x][y]==3):
-					linetxt+=" "+colored(door_symbol,'cyan')
-				#display monster here
-		except:
-			pass
+		for x in range(len(grid[y])):
+			creature=False
+			for enemy in adversary:
+				if x == enemy.x and y == enemy.y:
+					creature=True
+			if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
+				linetxt+=" "+colored("?",'green')
+			elif(x==player.x and y==player.y):
+				#display player
+				linetxt+=" "+colored(player_symbol,'green', 'on_cyan')
+			elif creature == True:
+				linetxt+=" "+colored(enemy_symbol,'red','on_magenta')
+			elif(grid[x][y]==0):
+				linetxt+=" "+colored(empty_symbol,'white')
+			elif(grid[x][y]==1):
+				linetxt+=" "+colored(wall_symbol,'white')
+			elif(grid[x][y]==2):
+				linetxt+=" "+colored(stair_symbol,'yellow')
+			elif(grid[x][y]==3):
+				linetxt+=" "+colored(door_symbol,'cyan')
 	print("")
-	print(gen_line("+","-"))
+	print(ui.gen_line("+","-"))
 
 def gen_grid(w,h):
 	for x in range(w):
@@ -132,7 +128,7 @@ def gen_symetry():
 		sym=rn.randint(0,1)
 		for x in range(half_h):
 			if rn.randint(0,sym)==0:
-				for y in range(half_w):
+				for y in range(half_h):
 					if grid[y][x] == 1:
 						grid[y][half_h+(half_h-x)]=1
 					elif grid[y][x] == 0:
@@ -143,7 +139,7 @@ def gen_symetry():
 		sym=rn.randint(0,1)
 		for y in range(half_w):
 			if rn.randint(0,sym)==0:
-				for x in range(half_h):
+				for x in range(half_w):
 					if grid[y][x] == 1:
 						grid[half_w+(half_w-y)][x]=1
 					elif grid[y][x] == 0:
@@ -412,6 +408,19 @@ def spawn_enemy():
 		enemy.y=yy
 
 #gen dungeon floor
+entry = ""
+name = ""
+letter=['ok','del','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+while entry != "ok":
+	entry = ui.menu(letter,letter,"NAME:"+str(name))
+	if entry == 'del':
+		name=""
+	elif entry != 'ok':
+		name+=entry
+if name == "":
+	name="..."
+player = entities.Spider(str(name),True,dungeon_floor)
+
 adversary = gen_enemy()
 grid = gen_grid(w,h)
 grid = gen_wall()
@@ -421,6 +430,7 @@ grid = spawn_player(w,h)
 spawn_enemy()
 os.system('clear')
 display(grid)
+
 
 while True:
 	keypress = main()
