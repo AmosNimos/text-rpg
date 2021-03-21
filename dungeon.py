@@ -21,8 +21,7 @@ enemy_symbol = "&"
 debug=""
 dungeon_floor=1
 
-scale = [0.5,1,1.5,2]
-monster_rank = ["Small","Regular","Large","Giant"]
+
 adversary = []
 #rows == height
 w = int((rows)-8)
@@ -30,7 +29,7 @@ h = w
 cursor_active=False
 cursor_position = [0,0]
 
-player = entities.Spider("Player",True)
+player = entities.Spider("Player",True,dungeon_floor)
 
 def gen_enemy():
 	amounth = round(w/3)
@@ -38,22 +37,7 @@ def gen_enemy():
 	enemy=[]
 	for index in range(amounth):
 		power=0
-		size_index = round(rn.randint(0,3))
-		size = scale[size_index]
-		enemy.append(entities.Insect(str(monster_rank[size_index])+" Bug",False))
-		value = rn.randint(2,16)
-		power+=value
-		enemy[index].max_hp = round(dungeon_floor*value*size)
-		enemy[index].hp = enemy[index].max_hp
-		value = rn.randint(1,8)
-		power+=value
-		enemy[index].max_sp = round(dungeon_floor*value*size)
-		enemy[index].sp = enemy[index].max_sp
-		value = rn.randint(0,4)
-		power+=value
-		enemy[index].max_mp = round(dungeon_floor*value*size)
-		enemy[index].mp = enemy[index].max_mp
-		enemy[index].lv = round(dungeon_floor+power/3)
+		enemy.append(entities.Insect("",False,dungeon_floor))
 	return enemy
 		#enemy.hp = max_hp
 

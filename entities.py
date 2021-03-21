@@ -3,10 +3,11 @@ import skills
 import ui
 import time
 import battle
+import random as rn
 
 
 class Monster:
-	def __init__(self,name,player):
+	def __init__(self,name,player,level):
 		self.name=name
 		self.max_sp=200 
 		self.sp=self.max_sp #stamina point
@@ -23,6 +24,7 @@ class Monster:
 		self.atribute={"spd":0,"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}
 		self.moves=0
 		self.titles=[]
+		self.size=0
 		#stamina how long you can use your full speed bedor it decrease to one move per turn, befor each move remove health.
 		#each spiecies have their own random atribute rules.
 		self.se=[] #status effect
@@ -75,13 +77,21 @@ class Monster:
 				self.mp+=skill["affect_mp"]
 			ui.time.sleep(0.50)
 		else:
+			ui.clear()
+			print(battle.field(player,opponent))
 			missing=""
 			if self.hp < skill["cost_hp"]:
-				print(self.name+" cant use "+skill["name"]+" not eneugh hp.")
+				text = self.name+" cant use "+skill["name"]+" not eneugh hp."
+				ui.delay_text(text,True,True)
+				time.sleep(0.25)
 			if self.sp < skill["cost_sp"]:
-				print(self.name+" cant use "+skill["name"]+" not eneugh sp.")
+				text = self.name+" cant use "+skill["name"]+" not eneugh sp."
+				ui.delay_text(text,True,True)
+				time.sleep(0.25)
 			if self.mp < skill["cost_mp"]:
-				print(self.name+" cant use "+skill["name"]+" not eneugh mp.")
+				text = self.name+" cant use "+skill["name"]+" not eneugh mp."
+				ui.delay_text(text,True,True)
+				time.sleep(0.25)
 
 	def death(self):
 		if self.hp<=0:
@@ -92,14 +102,34 @@ class Monster:
 
 ##Animal classes
 class Insect(Monster):
-	def __init__(self,name,player):
-		super().__init__(name,player)
+
+	def __init__(self,name,player,level):
+		scale = [0.5,1,1.5,2]
+		monster_rank = ["Small","Regular","Large","Giant"]
+		value=0
+		size_index = round(rn.randint(0,3))
+		size = scale[size_index]
+		super().__init__(name,player,level)
 		self.skills.append(skills.bite_skill)
 		self.atribute={"spd":2,"agi":4,"wiz":1,"str":1,"dex":4,"res":2,"sta":4}
+		if player == False:
+			self.lv=level
+		else:
+			self.lv=1
+		value = rn.randint(2,16)
+		self.max_hp = round(level*value*size)
+		self.hp = self.max_hp
+		value = rn.randint(1,8)
+		self.max_sp = round(level*value*size)
+		self.sp = self.max_sp
+		value = rn.randint(0,4)
+		self.max_mp = round(level*value*size)
+		self.mp = self.max_mp
+		self.name=str(monster_rank[size_index])+" Bug"
 
 class Spider(Insect):
-	def __init__(self,name,player):
-		super().__init__(name,player)
+	def __init__(self,name,player,level):
+		super().__init__(name,player,level)
 		self.skills.append(skills.poison_fang_skill)
 		self.atribute={"spd":4,"agi":6,"wiz":1,"str":2,"dex":8,"res":2,"sta":6}
 		#self.skills.append("web")
