@@ -81,13 +81,18 @@ def skills_menu(player,opponent):
 			opponent.use_skill(entry,player,player,opponent)
 			opponent.moves+=1
 	if opponent.hp<=0:
-		print(opponent.name+" was defeated")
-		if len(opponents) > 0:
-			battle_menu(player,opponents)
-		else:
-			print("Victory!")
-			exit()
+		ui.clear()
+		print(field(player,opponent))
+		text = opponent.name+" was defeated"
+		ui.delay_text(text,True,True)
+		time.sleep(0.25)
+		opponent.death()
 	if player.hp<=0:
-		ui.game_over()
+		ui.clear()
+		print(field(player,opponent))
+		text = player.name+" was defeated"
+		ui.delay_text(text,True,True)
+		time.sleep(0.25)
+		player.death()
 		#info name, description, consume, inflict.
 

@@ -42,7 +42,7 @@ def axis_menu(options,names,head,cursor):
 			if cursor[0] == x and cursor[1]== y:
 				line += margin+"["+str(names[y,x])+"]"
 			else:
-				line += margin+"("+str(names[y,x])+")"
+				line += margin+" "+str(names[y,x])+" "
 			n+=1
 		line+="\n"
 
@@ -69,7 +69,7 @@ def axis_menu(options,names,head,cursor):
 				if cursor[0] == x and cursor[1]==y:
 					line += margin+"["+str(names[y,x])+"]"
 				else:
-					line += margin+"("+str(names[y,x])+")"
+					line += margin+" "+str(names[y,x])+" "
 				n+=1
 			line+="\n"
 		clear()

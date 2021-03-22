@@ -39,7 +39,7 @@ poison_fang_skill={
 	"description":"A special phisical attack to pierce the skin of the target with fangs to inject poison.",
 	"level":1,
 	"cost_hp":0,
-	"cost_sp":15,
+	"cost_sp":1, #15
 	"cost_mp":0,
 	"affect_hp":50,
 	"affect_sp":0,

@@ -15,7 +15,7 @@ class Monster:
 		self.name=name
 		self.lv=level #level
 		self.player=player
-
+		self.rank=0
 		self.max_sp=200 
 		self.sp=self.max_sp #stamina point
 		self.max_hp=100
@@ -101,6 +101,19 @@ class Monster:
 	def death(self):
 		if self.hp<=0:
 			self.alive = False
+			self.name+=" corps"
+
+	def recover(self,value):
+		self.hp+=value
+		self.sp+=round(value/2)
+		self.mp+=round(value/3)
+		if self.hp>self.max_hp:
+			self.hp=self.max_hp
+		if self.sp>self.max_sp:
+			self.sp=self.max_hp
+		if self.mp>self.max_mp:
+			self.mp=self.max_mp
+
 
 	def gain_skill(self,new_skill):
 		self.skills.append(new_skill)
@@ -116,9 +129,10 @@ class Insect(Monster):
 		size = scale[size_index]
 		super().__init__(name,player,level)
 		self.skills.append(skills.bite_skill)
-		self.atribute={"spd":2,"agi":4,"wiz":1,"str":1,"dex":4,"res":2,"sta":4}
+		self.atribute={"spd":1,"agi":4,"wiz":1,"str":1,"dex":4,"res":2,"sta":4}
 		if player == False:
 			self.lv=level
+			self.size=size
 			self.name=str(monster_rank[size_index])+" Bug"
 		else:
 			self.lv=1
@@ -136,7 +150,7 @@ class Spider(Insect):
 	def __init__(self,name,player,level):
 		super().__init__(name,player,level)
 		self.skills.append(skills.poison_fang_skill)
-		self.atribute={"spd":4,"agi":6,"wiz":1,"str":2,"dex":8,"res":2,"sta":6}
+		self.atribute={"spd":8,"agi":6,"wiz":1,"str":2,"dex":8,"res":2,"sta":6}
 		#self.skills.append("web")
 
 #x = Insect("bob")

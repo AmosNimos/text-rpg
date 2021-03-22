@@ -183,7 +183,7 @@ def enemy_movement():
 	for enemy in adversary:
 		#debug = look
 		debug=str(enemy.name)+" turn, moves ["+str(enemy.moves)+"/"+str(enemy.atribute["spd"])+"]"
-		while enemy.moves <= enemy.atribute["spd"]:
+		while enemy.moves <= enemy.atribute["spd"] and enemy.alive==True:
 			moved = False
 			while moved == False:
 				look = rn.randrange(0,4)
@@ -194,7 +194,7 @@ def enemy_movement():
 							enemy.x+=1
 							moved=True
 						elif e == player.name:
-							print("attack")
+							battle.battle(player,enemy,False)
 				elif look == 1:
 					if grid[enemy.x-1][enemy.y] == 0 and enemy.x-1>0:
 						r,e = check_for_entities(enemy.x-1,enemy.y,enemy)
@@ -202,7 +202,7 @@ def enemy_movement():
 							enemy.x-=1
 							moved=True
 						elif e == player.name:
-							print("attack")
+							battle.battle(player,enemy,False)
 				elif look ==2:
 					if grid[enemy.x][enemy.y+1] == 0 and enemy.y+1<h-1:
 						r,e = check_for_entities(enemy.x,enemy.y+1,enemy)
@@ -210,7 +210,7 @@ def enemy_movement():
 							enemy.y+=1
 							moved=True
 						elif e == player.name:
-							print("attack")
+							battle.battle(player,enemy,False)
 				elif look ==3:
 					if grid[enemy.x][enemy.y-1] == 0 and enemy.y-1>0:
 						r,e = check_for_entities(enemy.x,enemy.y-1,enemy)
@@ -218,7 +218,7 @@ def enemy_movement():
 							enemy.y-=1
 							moved=True
 						elif e == player.name:
-							print("attack")
+							battle.battle(player,enemy,False)
 				if moved==True:
 					os.system('clear')
 					display(grid)
@@ -359,11 +359,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid):
 				#debug = "Move Down"
 		if grid[xx][yy] == 2:
 			debug = "Ladder"
-			if(floor>0):
-				choice = input("Ladder available action (up,down,nothing)")
-				#when using ladder save floor current floor and generate next floor, or load previus.
-			else :
-				choice = input("Ladder available action (down,nothing)")
+
 		if keypress == ';':
 			cursor_position=[player.x,player.y]
 			cursor_active = True
@@ -372,6 +368,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid):
 		if player.moves >= player.atribute["spd"]:
 			debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
 			debug+="\nend of turn?"
+
 	elif player.turn == True and cursor_active == True:
 		if keypress == 'l' and cursor_position[0]<w-1:
 			cursor_position[0]+=1;
@@ -393,7 +390,15 @@ def player_controller(cursor_active,cursor_position,adversary,grid):
 					if enemy.x == player.x or enemy.y == player.y:
 						if check_for_wall(player.x,player.y,enemy.x,enemy.y)==False:
 							#if no wall are found between the two
-							battle.battle(player,enemy,True)
+							if enemy.alive==True:
+								battle.battle(player,enemy,True)
+							else:
+								food = round(enemy.lv*enemy.size)*5
+								text = "eating "+str(enemy.name)+" recover "+str(food)
+								ui.delay_text(text,True,True)
+								time.sleep(0.25)
+								player.recover(food)
+								adversary.remove(enemy)
 						else:
 							debug=str(enemy.name)+" out of reach."
 					else:
