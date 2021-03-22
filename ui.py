@@ -93,10 +93,10 @@ def menu(options,names,head):
 	for x in range(len(names)):
 		if x<cursor+view_range and x>=cursor:
 			if cursor == x:
-				line += margin+"[▸] "+str(names[x])
+				line += margin+"▸ "+str(names[x])
 				#line += margin+"[+] "+str(names[x])
 			else:
-				line += margin+"[▫] "+str(names[x])
+				line += margin+"▫ "+str(names[x])
 				#line += margin+"[-] "+str(names[x])
 			if x<len(names)-1:
 				line+="\n"
@@ -125,9 +125,9 @@ def menu(options,names,head):
 		for x in range(len(names)):
 			if x<cursor+view_range and x>=cursor-back_view:
 				if cursor == x:
-					line += margin+"[▸] "+str(names[x])
+					line += margin+"▸ "+str(names[x])
 				else:
-					line += margin+"[▫] "+str(names[x])
+					line += margin+"▫ "+str(names[x])
 				if x<len(names)-1:
 					line+="\n"
 			if len(names)>cursor+view_range:
@@ -159,6 +159,7 @@ def stats(entity):
 	return render
 
 def gen_line(side,middle):
+	middle = "─"
 	line=side
 	for x in range(cols-2):
 		line+=middle
@@ -197,9 +198,9 @@ def gen_bar(text,current,total,front,back,color,size):
 		bar_size = current/total*size
 		for x in range(size):
 			if x<bar_size:
-				line+=colored("#",color,"on_"+color) #
+				line+=colored("█",color,"on_"+color) #
 			else:
-				line+=colored("_",color)
+				line+=colored("▁",color)
 	else:
 		for x in range(size):
 			line+=colored("_",color)
