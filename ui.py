@@ -25,11 +25,12 @@ def main():
 		for e in input_generator:
 			return e
 
-def axis_menu(options,names,head):
+def axis_menu(options,names,head,cursor):
 	h=6
 	w=round(len(names)/h)
 	names = np.reshape(names, (h, w))
-	cursor=[0,0]
+
+	
 	keypress=""
 	line=""
 	view_range=4
@@ -54,16 +55,14 @@ def axis_menu(options,names,head):
 	while keypress != ";":
 		more=False
 		keypress = main()
+		if keypress=="l":
+			cursor[0]+=1
+		if keypress=="h":
+			cursor[0]-=1;
 		if keypress=="k":
-			if cursor[0]<len(options[1])-1:
-				cursor[0]+=1
-			else:
-				cursor[0]=0;
+			cursor[1]+=1
 		if keypress=="j":
-			if cursor[0]==0:
-				cursor[0]=len(options[1])-1
-			else:
-				cursor[0]-=1;
+			cursor[1]-=1;
 		n=0
 		for y in range(h):
 			for x in range(w):
@@ -78,10 +77,8 @@ def axis_menu(options,names,head):
 		print(line)
 		line=""
 
-	for option in range(len(options)):
-		if cursor == option:
-			return options[option]
-	return "error"
+
+	return names[cursor[1],cursor[0]],cursor
 
 def menu(options,names,head):
 	cursor=0
