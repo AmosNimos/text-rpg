@@ -423,13 +423,13 @@ def spawn_enemy():
 entry = ""
 name = ""
 letters=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-letters += [" ",".","-","?","&","$","☠"]
 letters += ["0","1","2","3","4","5","6","7","8","9"]
-letters += ['del','ok']
+letters += [" ",".","-","?","&","$","!","☠","★"]
+letters += ['back','del','ok']
 #print(str(len(letters))+":"+str(letters))
 while entry != "ok":
-	entry = ui.menu(letters,letters,"NAME:"+str(name))
-	#ui.axis_menu(letters,letters,"enter name:"+str(name))
+	#entry = ui.menu(letters,letters,"NAME:"+str(name))
+	ui.axis_menu(letters,letters,"enter name:"+str(name))
 	if entry == 'del':
 		name=""
 	elif entry != 'ok':

@@ -26,7 +26,7 @@ def main():
 			return e
 
 def axis_menu(options,names,head):
-	h=5
+	h=6
 	w=round(len(names)/h)
 	names = np.reshape(names, (h, w))
 	cursor=[0,0]
