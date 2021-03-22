@@ -5,10 +5,17 @@ import time
 import battle
 import random as rn
 
+class corps:
+	def __init__(self,name,player,level):
+		self.name=name+" corps"
+		self.lv=level #level
 
 class Monster:
 	def __init__(self,name,player,level):
 		self.name=name
+		self.lv=level #level
+		self.player=player
+
 		self.max_sp=200 
 		self.sp=self.max_sp #stamina point
 		self.max_hp=100
@@ -16,9 +23,7 @@ class Monster:
 		self.max_mp=0
 		self.mp=self.max_mp #magic point
 		self.sustenance=self.max_sp
-		self.lv=0 #level
 		self.alive=True
-		self.player=player
 		self.skills=[skills.tackle_skill]
 		self.turn=player
 		self.atribute={"spd":0,"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}

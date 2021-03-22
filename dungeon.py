@@ -30,7 +30,8 @@ wall_symbol = "▧"
 empty_symbol = "·"
 #enemy_symbol = "&"
 #enemy_symbol = "◆"
-enemy_symbol = "✕"
+enemy_symbol = "◆"
+corps_symbol="✕"
 door_symbol = "+"
 #cursor_symbol ="?"
 cursor_symbol ="▼"
@@ -40,10 +41,11 @@ dungeon_floor=1
 
 
 #rows == height
+w=0
 if (int((rows)-8)) == 0:
 	w = int((rows)-8)
 else:
-	w = int((rows+1)-8)
+	w = int((rows)-8)+1
 h = w
 cursor_active=False
 cursor_position = [0,0]
@@ -88,20 +90,21 @@ def display(grid):
 	print(ui.gen_line("+","-"))
 
 def gen_grid(w,h):
+	grid=[]
 	for x in range(w):
 		grid.append([])
 		for y in range(h):
 			grid[x].append(0)
 	return grid
 
-def gen_wall():
+def gen_wall(w,h,grid):
 	for y in range(len(grid)):
 		for x in range(len(grid[y])):
 			if rn.randrange(0,5)==0:
 				grid[y][x]=1
 	return grid
 
-def gen_automata():
+def gen_automata(w,h,grid):
 	nebor=0
 	w=len(grid)
 	for y in range(w):
@@ -132,11 +135,11 @@ def gen_automata():
 				nebor=0
 	return grid
 
-def gen_symetry():
+def gen_symetry(w,h,grid):
 	side=rn.randint(0,3)
 	if side == 1 or side == 3:
-		half_w = round(w)
-		half_h = round(h/2)
+		half_w = int(w)
+		half_h = int(h/2)-1
 		sym=rn.randint(0,1)
 		for x in range(half_h):
 			if rn.randint(0,sym)==0:
@@ -144,10 +147,10 @@ def gen_symetry():
 					if grid[y][x] == 1:
 						grid[y][half_h+(half_h-x)]=1
 					elif grid[y][x] == 0:
-						grid[y][half_h+(half_h-x)]=0
+							grid[y][half_h+(half_h-x)]=0
 	if side == 2 or side == 3:
-		half_w = round(w/2)
-		half_h = round(h)
+		half_w = int(w/2)-1
+		half_h = int(h)
 		sym=rn.randint(0,1)
 		for y in range(half_w):
 			if rn.randint(0,sym)==0:
@@ -226,7 +229,7 @@ def enemy_movement():
 		enemy.moves=0
 	os.system('clear')
 
-def spawn_player(w,h):
+def spawn_player(w,h,grid):
 	#player spawn
 	xx=rn.randrange(4,w-4)
 	yy=rn.randrange(4,h-4)
@@ -298,7 +301,7 @@ def check_for_wall(from_x,from_y,to_x,to_y):
 				to_y+=1
 	return False
 
-def player_controller(cursor_active,cursor_position):
+def player_controller(cursor_active,cursor_position,adversary,grid):
 	debug=""
 	djf=dungeon_floor
 	if player.moves > player.atribute["spd"]-1:
@@ -399,14 +402,22 @@ def player_controller(cursor_active,cursor_position):
 				elif grid[cursor_position[0]][cursor_position[1]]==2:
 					ladder_down=True
 			if ladder_down == True:
-				djf=dungeon_floor+1
+				adversary = gen_enemy()
+				grid = gen_grid(w,h)
+				grid = gen_wall(w,h,grid)
+				grid = gen_automata(w,h,grid)
+				grid = gen_symetry(w,h,grid)
+				grid = spawn_player(w,h,grid)
+				grid,adversary = spawn_enemy(w,h,grid,adversary)
+				os.system('clear')
+				display(grid)
 
 			cursor_active = False
 	else:
 		print("...")
-	return cursor_active,cursor_position,debug,djf
+	return cursor_active,cursor_position,debug,djf,adversary,grid
 
-def spawn_enemy():
+def spawn_enemy(w,h,grid,adversary):
 	#player spawn
 	xx=0
 	yy=0
@@ -418,6 +429,7 @@ def spawn_enemy():
 			yy=rn.randrange(1,h-1)
 		enemy.x=xx
 		enemy.y=yy
+	return grid,adversary
 
 #gen dungeon floor
 entry = ""
@@ -441,14 +453,11 @@ player = entities.Spider(str(name),True,dungeon_floor)
 
 adversary = gen_enemy()
 grid = gen_grid(w,h)
-grid = gen_wall()
-grid = gen_automata()
-try:
-	grid = gen_symetry()
-except:
-	pass
-grid = spawn_player(w,h)
-spawn_enemy()
+grid = gen_wall(w,h,grid)
+grid = gen_automata(w,h,grid)
+grid = gen_symetry(w,h,grid)
+grid = spawn_player(w,h,grid)
+grid,adversary = spawn_enemy(w,h,grid,adversary)
 os.system('clear')
 display(grid)
 
@@ -456,7 +465,7 @@ display(grid)
 while True:
 	keypress = main()
 	current_floor=dungeon_floor
-	cursor_active,cursor_position,debug,dungeon_floor = player_controller(cursor_active,cursor_position)
+	cursor_active,cursor_position,debug,dungeon_floor,adversary,grid = player_controller(cursor_active,cursor_position,adversary,grid)
 	if dungeon_floor>current_floor:
 		print("ladder up")
 		exit()
