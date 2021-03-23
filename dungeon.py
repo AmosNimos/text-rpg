@@ -20,7 +20,9 @@ adversary = []
 #player_symbol = "◉"
 player_symbol = "●"
 #stair_symbol = "H"
-stair_symbol = "☰"
+#stair_symbol = "☰"
+#stair_symbol="⍟"
+stair_symbol="✪"
 #rope = "┇"
 #wall_symbol = "#"
 #wall_symbol = "▣"
@@ -276,7 +278,7 @@ def appraisal(x,y):
 	if grid[x][y]==1:
 		return "Wall"
 	if grid[x][y]==2:
-		return "Ladder"
+		return "Portal"
 
 def check_for_wall(from_x,from_y,to_x,to_y):
 	if from_y == to_y:
@@ -303,9 +305,8 @@ def check_for_wall(from_x,from_y,to_x,to_y):
 				to_y+=1
 	return False
 
-def player_controller(cursor_active,cursor_position,adversary,grid):
+def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor):
 	debug=""
-	djf=dungeon_floor
 	if player.moves > player.atribute["spd"]-1:
 		player.turn=False
 		player.moves=0
@@ -360,7 +361,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid):
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Down"
 		if grid[xx][yy] == 2:
-			debug = "Ladder"
+			debug = "Portal" #ladder
 
 		if keypress == ';':
 			cursor_position=[player.x,player.y]
@@ -409,20 +410,31 @@ def player_controller(cursor_active,cursor_position,adversary,grid):
 				elif grid[cursor_position[0]][cursor_position[1]]==2:
 					ladder_down=True
 			if ladder_down == True:
-				adversary = gen_enemy()
-				grid = gen_grid(w,h)
-				grid = gen_wall(w,h,grid)
-				grid = gen_automata(w,h,grid)
-				grid = gen_symetry(w,h,grid)
-				grid = spawn_player(w,h,grid)
-				grid,adversary = spawn_enemy(w,h,grid,adversary)
-				os.system('clear')
-				display(grid)
+				if battle.dist_p(cursor_position[0],cursor_position[1],player.x,player.y)<=1:
+					if cursor_position[0] == player.x or cursor_position[1] == player.y:
+						head = "Enter the portal to the next floor?"
+						entry = ui.menu([1,0],["yes","no"],head)
+						if entry == 1:
+							adversary = gen_enemy()
+							grid = gen_grid(w,h)
+							grid = gen_wall(w,h,grid)
+							grid = gen_automata(w,h,grid)
+							grid = gen_symetry(w,h,grid)
+							grid = spawn_player(w,h,grid)
+							grid,adversary = spawn_enemy(w,h,grid,adversary)
+							dungeon_floor+=1
+							debug="floor: "+str(dungeon_floor)
+							os.system('clear')
+							display(grid)
+					else:
+						debug="portal out of reach."
+				else:
+					debug="portal out of reach."
 
 			cursor_active = False
 	else:
 		print("...")
-	return cursor_active,cursor_position,debug,djf,adversary,grid
+	return cursor_active,cursor_position,debug,dungeon_floor,adversary,grid
 
 def spawn_enemy(w,h,grid,adversary):
 	#player spawn
@@ -449,16 +461,17 @@ def name_entry():
 	letters += ["_","-","💀","🔥"] #"&","$","!","☠","★","?","!"
 	letters += ['del','ok'] #'back',
 	#print(str(len(letters))+":"+str(letters))
-	while entry != "ok":
+	while entry != "OK":
+		head=""
 		head+=ui.gen_line("+","─")+"\n"
 		head+=ui.margin+"Enter name:"+str(name)+"\n"
 		head+=ui.gen_line("+","─")+"\n"
 		entry,cursor = ui.axis_menu(letters,letters,head,cursor)
 		if len(name)<1:
 			entry = entry.upper() 
-		if entry == 'del':
+		if entry == "DEL":
 			name=""
-		elif entry != 'ok':
+		elif entry != "OK":
 			name+=entry
 	if name == "":
 		name="..."
@@ -479,14 +492,7 @@ display(grid)
 
 while True:
 	keypress = main()
-	current_floor=dungeon_floor
-	cursor_active,cursor_position,debug,dungeon_floor,adversary,grid = player_controller(cursor_active,cursor_position,adversary,grid)
-	if dungeon_floor>current_floor:
-		print("ladder up")
-		exit()
-	elif dungeon_floor<current_floor:
-		print("ladder down")
-		exit()
+	cursor_active,cursor_position,debug,dungeon_floor,adversary,grid = player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor)
 	#permenent controlle
 	if keypress == '\x1b':
 		ui.clear()

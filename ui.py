@@ -48,7 +48,6 @@ def axis_menu(options,names,head,cursor):
 	print(head)
 	print(line)
 	line=""
-
 	#update menu
 	while keypress != ";":
 		more=False
