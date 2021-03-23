@@ -231,8 +231,10 @@ def enemy_movement():
 
 def spawn_player(w,h,grid):
 	#player spawn
-	xx=rn.randrange(4,w-4)
-	yy=rn.randrange(4,h-4)
+	#xx=rn.randrange(4,w-4)
+	#yy=rn.randrange(4,h-4)
+	xx=round(w/2)
+	yy=round(h/2)
 	update_player(xx,yy)
 	grid[xx][yy] = 0
 	#spawn stair
@@ -437,23 +439,31 @@ def spawn_enemy(w,h,grid,adversary):
 	return grid,adversary
 
 #gen dungeon floor
-entry = ""
-name = ""
-cursor =[0,0]
-letters=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-letters += ["0","1","2","3","4","5","6","7","8","9"]
-letters += [" ","-","💀","🔥"] #"&","$","!","☠","★","?","!"
-letters += ['del','ok'] #'back',
-#print(str(len(letters))+":"+str(letters))
-while entry != "ok":
-	#entry = ui.menu(letters,letters,"NAME:"+str(name))
-	entry,cursor = ui.axis_menu(letters,letters,"enter name:"+str(name),cursor)
-	if entry == 'del':
-		name=""
-	elif entry != 'ok':
-		name+=entry
-if name == "":
-	name="..."
+def name_entry():
+	entry = ""
+	name = ""
+	head = ""
+	cursor =[0,0]
+	letters=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+	letters += ["0","1","2","3","4","5","6","7","8","9"]
+	letters += ["_","-","💀","🔥"] #"&","$","!","☠","★","?","!"
+	letters += ['del','ok'] #'back',
+	#print(str(len(letters))+":"+str(letters))
+	while entry != "ok":
+		head+=ui.gen_line("+","─")+"\n"
+		head+=ui.margin+"Enter name:"+str(name)+"\n"
+		head+=ui.gen_line("+","─")+"\n"
+		entry,cursor = ui.axis_menu(letters,letters,head,cursor)
+		if len(name)<1:
+			entry = entry.upper() 
+		if entry == 'del':
+			name=""
+		elif entry != 'ok':
+			name+=entry
+	if name == "":
+		name="..."
+	return name
+name = name_entry()
 player = entities.Spider(str(name),True,dungeon_floor)
 
 adversary = gen_enemy()
@@ -479,8 +489,7 @@ while True:
 		exit()
 	#permenent controlle
 	if keypress == '\x1b':
-		debug = "Exit"
-		print(debug)
+		ui.clear()
 		exit()
 	os.system('clear')
 	if player.turn == False:

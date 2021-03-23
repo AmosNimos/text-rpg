@@ -90,9 +90,15 @@ def skills_menu(player,opponent):
 	if player.hp<=0:
 		ui.clear()
 		print(field(player,opponent))
-		text = player.name+" was defeated"
+		text = player.name+" was killed by "+opponent.name
 		ui.delay_text(text,True,True)
-		time.sleep(0.25)
+		time.sleep(0.50)
+		ui.clear()
+		print(ui.gen_line("+","─"))
+		print(ui.gen_title("│"," ","GAME OVER"))
+		print(ui.gen_line("+","─"))
+		time.sleep(0.50)
+		exit()
 		player.death()
 		#info name, description, consume, inflict.
 

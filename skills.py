@@ -8,9 +8,9 @@ tackle_skill={
 	"description":"A simple phisical attack to seize and throw down the target",
 	"level":1,
 	"cost_hp":0,
-	"cost_sp":10,
+	"cost_sp":0, #10
 	"cost_mp":0,
-	"affect_hp":10,
+	"affect_hp":20,#
 	"affect_sp":0,
 	"affect_mp":0,
 	"range":1,
@@ -23,7 +23,7 @@ bite_skill={
 	"description":"A simple phisical attack to pierce the skin of the target with the teeth, fangs, or mouthparts.",
 	"level":1,
 	"cost_hp":0,
-	"cost_sp":2,
+	"cost_sp":0, #2
 	"cost_mp":0,
 	"affect_hp":4,
 	"affect_sp":0,
@@ -41,7 +41,7 @@ poison_fang_skill={
 	"cost_hp":0,
 	"cost_sp":1, #15
 	"cost_mp":0,
-	"affect_hp":50,
+	"affect_hp":0,
 	"affect_sp":0,
 	"affect_mp":0,
 	"range":1,

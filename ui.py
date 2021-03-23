@@ -27,10 +27,8 @@ def main():
 
 def axis_menu(options,names,head,cursor):
 	h=6
-	w=round(len(names)/h)
+	w=int(len(names)/h)
 	names = np.reshape(names, (h, w))
-
-	
 	keypress=""
 	line=""
 	view_range=4
@@ -56,13 +54,25 @@ def axis_menu(options,names,head,cursor):
 		more=False
 		keypress = main()
 		if keypress=="l":
-			cursor[0]+=1
+			if cursor[0]<h:
+				cursor[0]+=1
+			else:
+				cursor[0]=0
 		if keypress=="h":
-			cursor[0]-=1;
+			if cursor[0]==0:
+				cursor[0]=h;
+			else:
+				cursor[0]-=1;
 		if keypress=="k":
-			cursor[1]+=1
+			if cursor[1]+2<w:
+				cursor[1]+=1
+			else:
+				cursor[1]=0
 		if keypress=="j":
-			cursor[1]-=1;
+			if cursor[1]==0:
+				cursor[1]=w-2;
+			else:
+				cursor[1]-=1;
 		n=0
 		for y in range(h):
 			for x in range(w):
@@ -205,7 +215,13 @@ def gen_bar(text,current,total,front,back,color,size):
 	return line
 
 def gen_title(side,middle,text):
-	filled = int(len(text)/2)+1
+	filled = int(len(text)/2)
+	while (int(cols/2)-filled)*2+len(text)>cols:
+		filled+=1
+	if (filled % 2) != 0:
+		filled+=1
+	if (len(text) % 2) != 0:
+		text+=middle
 	line=side
 	for x in range(int(cols/2)-filled):
 		line+=middle

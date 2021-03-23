@@ -14,6 +14,7 @@ class Monster:
 	def __init__(self,name,player,level):
 		self.name=name
 		self.lv=level #level
+		self.xp=0
 		self.player=player
 		self.rank=0
 		self.max_sp=200 
@@ -46,6 +47,12 @@ class Monster:
 			self.hp-=skill["cost_hp"]
 			self.sp-=skill["cost_sp"]
 			self.mp-=skill["cost_mp"]
+			if self.hp<0:
+				self.hp=0
+			if self.sp<0:
+				self.sp=0
+			if self.mp<0:
+				self.mp=0
 			ui.clear()
 			print(battle.field(player,opponent))
 			#add a miss parameter
@@ -56,6 +63,12 @@ class Monster:
 			target.hp-=skill["affect_hp"]
 			target.sp-=skill["affect_sp"]
 			target.mp-=skill["affect_mp"]
+			if target.hp<0:
+				target.hp=0
+			if target.sp<0:
+				target.sp=0
+			if target.mp<0:
+				target.mp=0	
 			ui.clear()
 			print(battle.field(player,opponent))
 			text = target.name+" get hit by "+skill["name"]+"."
@@ -86,17 +99,17 @@ class Monster:
 			print(battle.field(player,opponent))
 			missing=""
 			if self.hp < skill["cost_hp"]:
-				text = self.name+" cant use "+skill["name"]+" not eneugh hp."
+				text = self.name+" cant use "+skill["name"]+" not eneugh (HP)."
 				ui.delay_text(text,True,True)
-				time.sleep(0.25)
+				time.sleep(0.35)
 			if self.sp < skill["cost_sp"]:
-				text = self.name+" cant use "+skill["name"]+" not eneugh sp."
+				text = self.name+" cant use "+skill["name"]+" not eneugh (SP)."
 				ui.delay_text(text,True,True)
-				time.sleep(0.25)
+				time.sleep(0.35)
 			if self.mp < skill["cost_mp"]:
-				text = self.name+" cant use "+skill["name"]+" not eneugh mp."
+				text = self.name+" cant use "+skill["name"]+" not eneugh (MP)."
 				ui.delay_text(text,True,True)
-				time.sleep(0.25)
+				time.sleep(0.35)
 
 	def death(self):
 		if self.hp<=0:
@@ -104,6 +117,7 @@ class Monster:
 			self.name+=" corps"
 
 	def recover(self,value):
+		self.xp+=value
 		self.hp+=value
 		self.sp+=round(value/2)
 		self.mp+=round(value/3)
