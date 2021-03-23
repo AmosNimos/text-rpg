@@ -8,12 +8,12 @@ tackle_skill={
 	"description":"A simple phisical attack to seize and throw down the target",
 	"level":1,
 	"cost_hp":0,
-	"cost_sp":0, #10
+	"cost_sp":2, #10
 	"cost_mp":0,
-	"affect_hp":20,#
+	"affect_hp":4,#
 	"affect_sp":0,
 	"affect_mp":0,
-	"range":1,
+	"range":2,
 	"support":False,
 	"status":False,
 }
