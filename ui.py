@@ -268,10 +268,10 @@ def gen_options(options):
 	return line
 
 
-
+game_title = "monster of the dungeon"
 def main_menu():
 	line = gen_line("+","-")
-	title = gen_title("|"," ","game title")
+	title = gen_title("|"," ",game_title)
 	option = gen_title(""," ","[START]")
 	keypress=""
 	head = ""

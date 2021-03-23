@@ -13,7 +13,7 @@ class corps:
 class Monster:
 	def __init__(self,name,player,level):
 		self.name=name
-		self.lv=level #level
+		self.lv=level+1 #level
 		self.xp=0
 		self.player=player
 		self.rank=0
