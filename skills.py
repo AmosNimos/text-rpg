@@ -2,7 +2,7 @@
 #self.status = {"terget":target,"type":"poison","dmg": 5, "turns": 5, chances:"100%"}
 #consume {"hp":0,"mp":0,"sp":0}
 # growth {"status_effect":self.level*0.5, "status_turn":False, "skill_effect": 2}
-
+from termcolor import colored, cprint
 tackle_skill={
 	"name":"Tackle",
 	"description":"A simple phisical attack to seize and throw down the target",
@@ -15,7 +15,7 @@ tackle_skill={
 	"affect_mp":0,
 	"range":2,
 	"support":False,
-	"status":False,
+	"status":"",
 }
 
 bite_skill={
@@ -30,7 +30,7 @@ bite_skill={
 	"affect_mp":0,
 	"range":1,
 	"support":False,
-	"status":False,
+	"status":"",
 }
 
 
@@ -46,11 +46,6 @@ poison_fang_skill={
 	"affect_mp":0,
 	"range":1,
 	"support":False,
-	"status":["poison",],
+	"status":colored("poison","white","on_magenta", attrs=["bold"]),
 }
 
-poison_status={
-	"type":"poison",
-	"level":1,
-	"last":1,
-}

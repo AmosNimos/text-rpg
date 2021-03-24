@@ -1,3 +1,30 @@
-enemy monster attack
-changing dungeon floor (save up to 5 previus floor) (seal previus path warning)
-add randomness to attack and stuff like dmg*random(0.5,1.5)
+#enemy monster attack
+#changing dungeon floor (save up to 5 previus floor) (seal previus path warning)
+#add randomness to attack and stuff like dmg*random(0.5,1.5)
+name idea:
+death & evolution
+titan reign
+infernal collapse
+blood of dead
+spirit of struggle
+spirit cry
+death & reign
+blood & king
+dungeon of possession
+monster king
+god of infinite
+maou rise
+death & execution
+maou & survival
+monster of cry
+dungeon struggle
+god of possession
+domination of evolution
+dungeon of infinite
+titan of world
+infernal of survival
+symphony & king
+
+
+
+

@@ -3,7 +3,6 @@ import os
 import ui
 
 limit_number_lenght=6
-game_title = "monster of the dungeon"
 # start
 os.system('clear')
 ui.main_menu()

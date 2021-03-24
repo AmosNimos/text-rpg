@@ -160,7 +160,7 @@ def stats(entity):
 	mp_bar = gen_bar("MP",entity.mp,entity.max_mp,">",".","blue",bar_size) # magic
 	render+=hp_bar+"\n"+sp_bar+"\n"+mp_bar+"\n"
 	for status in entity.se:
-		status_effects+=str(status["type"])+", lv."+str(status["level"])+" last."+str(status["last"])
+		status_effects+=status
 	render+=margin*2+"[status:"+str(status_effects)+"]\n" #status effect
 	return render
 

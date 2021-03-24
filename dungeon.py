@@ -36,7 +36,8 @@ enemy_symbol = "◆"
 corps_symbol="✕"
 door_symbol = "+"
 #cursor_symbol ="?"
-cursor_symbol ="▼"
+#cursor_symbol ="▼"
+cursor_symbol ="▸"
 debug=""
 dungeon_floor=1
 
@@ -73,21 +74,31 @@ def display(grid):
 			for enemy in adversary:
 				if x == enemy.x and y == enemy.y:
 					creature=True
-			if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
-				linetxt+=" "+colored(cursor_symbol,'green')
-			elif(x==player.x and y==player.y):
+			if(x==player.x and y==player.y):
 				#display player
-				linetxt+=" "+colored(player_symbol,'green')
+				symbol=player_symbol
+				color='green'
 			elif creature == True:
-				linetxt+=" "+colored(enemy_symbol,'red')
+				symbol=enemy_symbol
+				color='red'
 			elif(grid[x][y]==0):
-				linetxt+=" "+colored(empty_symbol,'white')
+				symbol=empty_symbol
+				color='white'
 			elif(grid[x][y]==1):
-				linetxt+=" "+colored(wall_symbol,'white')
+				symbol=wall_symbol
+				color='white'
 			elif(grid[x][y]==2):
-				linetxt+=" "+colored(stair_symbol,'yellow')
+				symbol=stair_symbol
+				color='yellow'
 			elif(grid[x][y]==3):
-				linetxt+=" "+colored(door_symbol,'cyan')
+				symbol=door_symbol
+				color='cyan'
+			if cursor_active == True and (x==cursor_position[0] and y==cursor_position[1]):
+				#linetxt+=" "+colored(cursor_symbol,'green',"on_white")
+				#blinking atribute is also really cool
+				linetxt+=" "+colored(symbol,"white","on_blue", attrs=["reverse"])
+			else:
+				linetxt+=" "+colored(symbol,color)
 	print("")
 	print(ui.gen_line("+","-"))
 
@@ -268,8 +279,10 @@ def main():
 
 def appraisal(x,y):
 	# the amount of information of each apresal is equivalent to the wiz level, just like moves is equivalent to spd, the information are stored as string in list
+	text=""
 	if x == player.x and y == player.y:
-		return player.name
+		text = player.name+" [XP:"+str(player.xp)+"/"+str(player.max_xp)+"]"
+		return text
 	for enemy in adversary:
 		if x == enemy.x and y == enemy.y:
 			return enemy.name
@@ -336,7 +349,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Left"
-		if keypress == 'j' and player.y>0:
+		if keypress == 'k' and player.y>0:
 			if(grid[player.x][player.y-1]!=1):
 				r,e = check_for_entities(player.x,player.y-1,player)
 				if r == False:
@@ -348,7 +361,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Up"
-		if keypress == 'k' and player.y<h-2:
+		if keypress == 'j' and player.y<h-2:
 			if(grid[player.x][player.y+1]!=1):
 				r,e = check_for_entities(player.x,player.y+1,player)
 				if r == False:
@@ -461,7 +474,7 @@ def name_entry():
 	letters += ["_","-","💀","🔥"] #"&","$","!","☠","★","?","!"
 	letters += ['del','ok'] #'back',
 	#print(str(len(letters))+":"+str(letters))
-	while entry != "OK":
+	while entry != "OK" and entry != "ok":
 		head=""
 		head+=ui.gen_line("+","─")+"\n"
 		head+=ui.margin+"Enter name:"+str(name)+"\n"
@@ -469,9 +482,9 @@ def name_entry():
 		entry,cursor = ui.axis_menu(letters,letters,head,cursor)
 		if len(name)<1:
 			entry = entry.upper() 
-		if entry == "DEL":
-			name=""
-		elif entry != "OK":
+		if entry == "DEL" or entry == "del":
+			name=name[:-1]
+		elif entry != "OK" and entry != "ok":
 			name+=entry
 	if name == "":
 		name="..."

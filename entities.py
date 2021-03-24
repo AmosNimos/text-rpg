@@ -14,7 +14,8 @@ class Monster:
 	def __init__(self,name,player,level):
 		self.name=name
 		self.lv=level+1 #level
-		self.xp=0
+		self.xp=self.lv*125
+		self.max_xp=0
 		self.player=player
 		self.rank=0
 		self.max_sp=200 
@@ -29,11 +30,11 @@ class Monster:
 		self.turn=player
 		self.atribute={"spd":0,"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}
 		self.moves=0
-		self.titles=[]
 		self.size=0
 		#stamina how long you can use your full speed bedor it decrease to one move per turn, befor each move remove health.
 		#each spiecies have their own random atribute rules.
 		self.se=[] #status effect
+		self.titles=[]
 		self.x = 0
 		self.y = 0
 		self.experience=0 #xp
@@ -63,6 +64,7 @@ class Monster:
 			target.hp-=skill["affect_hp"]
 			target.sp-=skill["affect_sp"]
 			target.mp-=skill["affect_mp"]
+			target.se+=skill["status"]
 			if target.hp<0:
 				target.hp=0
 			if target.sp<0:
@@ -150,10 +152,10 @@ class Insect(Monster):
 			self.name=str(monster_rank[size_index])+" Bug"
 		else:
 			self.lv=1
-		value = rn.randint(2,16)
+		value = rn.randint(4,16)
 		self.max_hp = round(level*value*size)
 		self.hp = self.max_hp
-		value = rn.randint(1,8)
+		value = rn.randint(2,8)
 		self.max_sp = round(level*value*size)
 		self.sp = self.max_sp
 		value = rn.randint(0,4)
@@ -164,7 +166,7 @@ class Spider(Insect):
 	def __init__(self,name,player,level):
 		super().__init__(name,player,level)
 		self.skills.append(skills.poison_fang_skill)
-		self.atribute={"spd":8,"agi":6,"wiz":1,"str":2,"dex":8,"res":2,"sta":6}
+		self.atribute={"spd":4,"agi":6,"wiz":1,"str":2,"dex":8,"res":2,"sta":6}
 		#self.skills.append("web")
 
 #x = Insect("bob")
