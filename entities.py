@@ -13,9 +13,10 @@ class corps:
 class Monster:
 	def __init__(self,name,player,level):
 		self.name=name
+		self.race="?"
 		self.lv=level+1 #level
-		self.xp=self.lv*125
-		self.max_xp=0
+		self.xp=0
+		self.max_xp=self.lv*12
 		self.player=player
 		self.rank=0
 		self.max_sp=200 
@@ -31,6 +32,7 @@ class Monster:
 		self.atribute={"spd":0,"agi":0,"wiz":0,"str":0,"dex":0,"res":0,"sta":0}
 		self.moves=0
 		self.size=0
+		self.rank="?"
 		#stamina how long you can use your full speed bedor it decrease to one move per turn, befor each move remove health.
 		#each spiecies have their own random atribute rules.
 		self.se=[] #status effect
@@ -64,7 +66,9 @@ class Monster:
 			target.hp-=skill["affect_hp"]
 			target.sp-=skill["affect_sp"]
 			target.mp-=skill["affect_mp"]
-			target.se+=skill["status"]
+			if skill["status"] != "":
+				if rn.randint(10-skill["status_chance"])==0:
+					target.se.append(skill["status"])
 			if target.hp<0:
 				target.hp=0
 			if target.sp<0:
@@ -119,7 +123,10 @@ class Monster:
 			self.name+=" corps"
 
 	def recover(self,value):
-		self.xp+=value
+		self.xp+=value+1
+		if self.xp>self.max_hp:
+			levelup()
+			self.max_xp=self.lv*12
 		self.hp+=value
 		self.sp+=round(value/2)
 		self.mp+=round(value/3)
@@ -130,6 +137,8 @@ class Monster:
 		if self.mp>self.max_mp:
 			self.mp=self.max_mp
 
+	def levelup(self,new_skill):
+		self.lv+=1
 
 	def gain_skill(self,new_skill):
 		self.skills.append(new_skill)
@@ -144,27 +153,40 @@ class Insect(Monster):
 		size_index = round(rn.randint(0,3))
 		size = scale[size_index]
 		super().__init__(name,player,level)
+		self.rank=monster_rank[size_index]
+		self.race="bug"
 		self.skills.append(skills.bite_skill)
 		self.atribute={"spd":1,"agi":4,"wiz":1,"str":1,"dex":4,"res":2,"sta":4}
 		if player == False:
 			self.lv=level
 			self.size=size
-			self.name=str(monster_rank[size_index])+" Bug"
+			self.name=str(self.rank+" "+self.race)
+			value = rn.randint(4,16)
+			self.max_hp = round(level*value*size)
+			self.hp = self.max_hp
+			value = rn.randint(2,8)
+			self.max_sp = round(level*value*size)
+			self.sp = self.max_sp
+			value = rn.randint(0,4)
+			self.max_mp = round(level*value*size)
+			self.mp = self.max_mp
 		else:
-			self.lv=1
-		value = rn.randint(4,16)
-		self.max_hp = round(level*value*size)
-		self.hp = self.max_hp
-		value = rn.randint(2,8)
-		self.max_sp = round(level*value*size)
-		self.sp = self.max_sp
-		value = rn.randint(0,4)
-		self.max_mp = round(level*value*size)
-		self.mp = self.max_mp
+			self.lv = 1
+			value = rn.randint(8,24)
+			self.max_hp = round(level*value*size)+4
+			self.hp = self.max_hp
+			value = rn.randint(4,16)
+			self.max_sp = round(level*value*size)+4
+			self.sp = self.max_sp
+			value = rn.randint(0,8)
+			self.max_mp = round(level*value*size)+4
+			self.mp = self.max_mp
+
 
 class Spider(Insect):
 	def __init__(self,name,player,level):
 		super().__init__(name,player,level)
+		self.race="Spider"
 		self.skills.append(skills.poison_fang_skill)
 		self.atribute={"spd":4,"agi":6,"wiz":1,"str":2,"dex":8,"res":2,"sta":6}
 		#self.skills.append("web")

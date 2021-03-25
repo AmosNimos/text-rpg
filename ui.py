@@ -160,8 +160,9 @@ def stats(entity):
 	mp_bar = gen_bar("MP",entity.mp,entity.max_mp,">",".","blue",bar_size) # magic
 	render+=hp_bar+"\n"+sp_bar+"\n"+mp_bar+"\n"
 	for status in entity.se:
-		status_effects+=status
-	render+=margin*2+"[status:"+str(status_effects)+"]\n" #status effect
+		status_effects+="["+colored(status,"white","on_magenta", attrs=["bold"])+"]"
+
+	render+=margin*2+"status:"+status_effects+"\n" #status effect
 	return render
 
 def gen_line(side,middle):
@@ -215,10 +216,12 @@ def gen_bar(text,current,total,front,back,color,size):
 
 def gen_title(side,middle,text):
 	filled = int(len(text)/2)
-	while (int(cols/2)-filled)*2+len(text)>cols:
-		filled+=1
-	if (filled % 2) != 0:
-		filled+=1
+	line=""
+	# while (int(cols/2)-filled)*2+len(text)>cols:
+	# 	filled+=1
+	# if (filled % 2) != 0:
+	# 	filled+=1
+		
 	if (len(text) % 2) != 0:
 		text+=middle
 	line=side
@@ -228,6 +231,18 @@ def gen_title(side,middle,text):
 	for x in range(int(cols/2)-filled):
 		line+=middle
 	line+=side
+	left_filled = filled
+	while len(line)>cols:
+		filled+=1
+		if (len(text) % 2) != 0:
+			text+=middle
+		line=side
+		for x in range(int(cols/2)-left_filled):
+			line+=middle
+		line+=text.upper()
+		for x in range(int(cols/2)-filled):
+			line+=middle
+		line+=side
 	return line
 
 def skills_options(target):
@@ -267,9 +282,8 @@ def gen_options(options):
 			line+="\n"
 	return line
 
-
-game_title = "monster of the dungeon"
-def main_menu():
+def main_menu(title):
+	game_title = title
 	line = gen_line("+","-")
 	title = gen_title("|"," ",game_title)
 	option = gen_title(""," ","[START]")

@@ -16,45 +16,50 @@ xx=0
 yy=0
 grid=[]
 adversary = []
+#cursor_symbol ="?"
+#cursor_symbol ="▼"
 #player_symbol = "@"
 #player_symbol = "◉"
-player_symbol = "●"
 #stair_symbol = "H"
 #stair_symbol = "☰"
 #stair_symbol="⍟"
-stair_symbol="✪"
 #rope = "┇"
 #wall_symbol = "#"
 #wall_symbol = "▣"
 #wall_symbol = "▢"
-wall_symbol = "▧"
 #empty_symbol = "."
-empty_symbol = "·"
 #enemy_symbol = "&"
 #enemy_symbol = "◆"
+player_symbol = "●"
+stair_symbol="✪"
+wall_symbol = "▧"
+empty_symbol = "·"
 enemy_symbol = "◆"
 corps_symbol="✕"
 door_symbol = "+"
-#cursor_symbol ="?"
-#cursor_symbol ="▼"
 cursor_symbol ="▸"
+down_key = "j"
+up_key = "k"
+left_key = "h"
+right_key = "l"
 debug=""
 dungeon_floor=1
 
 
 
 #rows == height
-w=0
+h=0
 if (int((rows)-8)) == 0:
-	w = int((rows)-8)
+	h = int((rows)-8)
 else:
-	w = int((rows)-8)+1
-h = w
+	h = int((rows)-8)+1
+w=h
+
 cursor_active=False
 cursor_position = [0,0]
 
 def gen_enemy():
-	amounth = round(w/3)
+	amounth = round(w)
 	enemy=[]
 	for index in range(amounth):
 		power=0
@@ -69,7 +74,7 @@ def display(grid):
 	for y in range(len(grid)):
 		print(linetxt)
 		linetxt="  "
-		for x in range(len(grid[y])):
+		for x in range(len(grid[y])-1):
 			creature=False
 			for enemy in adversary:
 				if x == enemy.x and y == enemy.y:
@@ -99,7 +104,7 @@ def display(grid):
 				linetxt+=" "+colored(symbol,"white","on_blue", attrs=["reverse"])
 			else:
 				linetxt+=" "+colored(symbol,color)
-	print("")
+	#print("")
 	print(ui.gen_line("+","-"))
 
 def gen_grid(w,h):
@@ -193,11 +198,12 @@ def check_for_entities(x,y,user):
 
 
 def enemy_movement():
+	moved = False
 	for enemy in adversary:
 		#debug = look
 		debug=str(enemy.name)+" turn, moves ["+str(enemy.moves)+"/"+str(enemy.atribute["spd"])+"]"
 		while enemy.moves <= enemy.atribute["spd"] and enemy.alive==True:
-			moved = False
+			moved = enemy_ai(enemy)
 			while moved == False:
 				look = rn.randrange(0,4)
 				if look == 0:
@@ -206,41 +212,70 @@ def enemy_movement():
 						if r == False:
 							enemy.x+=1
 							moved=True
+							enemy.moves+=1
 						elif e == player.name:
 							battle.battle(player,enemy,False)
+							enemy.moves+=1
 				elif look == 1:
 					if grid[enemy.x-1][enemy.y] == 0 and enemy.x-1>0:
 						r,e = check_for_entities(enemy.x-1,enemy.y,enemy)
 						if r == False:
 							enemy.x-=1
 							moved=True
+							enemy.moves+=1
 						elif e == player.name:
 							battle.battle(player,enemy,False)
+							enemy.moves+=1
 				elif look ==2:
 					if grid[enemy.x][enemy.y+1] == 0 and enemy.y+1<h-1:
 						r,e = check_for_entities(enemy.x,enemy.y+1,enemy)
 						if r == False:
 							enemy.y+=1
 							moved=True
+							enemy.moves+=1
 						elif e == player.name:
 							battle.battle(player,enemy,False)
+							moved=True
+							enemy.moves+=1
 				elif look ==3:
 					if grid[enemy.x][enemy.y-1] == 0 and enemy.y-1>0:
 						r,e = check_for_entities(enemy.x,enemy.y-1,enemy)
 						if r == False:
 							enemy.y-=1
 							moved=True
+							enemy.moves+=1
 						elif e == player.name:
 							battle.battle(player,enemy,False)
-				if moved==True:
-					os.system('clear')
-					display(grid)
-					print(debug)
-					time.sleep(0.1)
-					enemy.moves+=1
-					debug=str(enemy.name)+" turn, moves ["+str(enemy.moves)+"/"+str(enemy.atribute["spd"])+"]"
+							moved=True
+							enemy.moves+=1
+				#if moved==True:
+					#os.system('clear')
+					#display(grid)
+					#print(debug)
+					#time.sleep(0.1)
+					#debug=str(enemy.name)+" turn, moves ["+str(enemy.moves)+"/"+str(enemy.atribute["spd"])+"]"
 		enemy.moves=0
 	os.system('clear')
+
+def enemy_ai(enemy):
+	enemy_range=0
+	moved = False
+	if enemy.x == player.x or enemy.y == player.y:
+		#check for the skills with the larger range of attack
+		for skill in enemy.skills:
+			if enemy_range < skill["range"]:
+				enemy_range = skill["range"]
+		if battle.dist_p(enemy.x,enemy.y,player.y,player.y)<=enemy_range:
+			if check_for_wall(enemy.x,enemy.y,player.y,player.y) == False:
+				battle.battle(player,enemy,False)
+				moved = True
+				enemy.moves+=1
+	return moved
+
+
+
+
+
 
 def spawn_player(w,h,grid):
 	#player spawn
@@ -281,7 +316,8 @@ def appraisal(x,y):
 	# the amount of information of each apresal is equivalent to the wiz level, just like moves is equivalent to spd, the information are stored as string in list
 	text=""
 	if x == player.x and y == player.y:
-		text = player.name+" [XP:"+str(player.xp)+"/"+str(player.max_xp)+"]"
+		text = player.name+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
+		text +="\nRace:"+str(player.race)+" LV:"+str(player.lv)+" [XP:"+str(player.xp)+"/"+str(player.max_xp)+"]"
 		return text
 	for enemy in adversary:
 		if x == enemy.x and y == enemy.y:
@@ -325,7 +361,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 		player.moves=0
 	if cursor_active == False and player.turn == True:
 		debug=str(player.name)+" turn, moves ["+str(player.moves)+"/"+str(player.atribute["spd"])+"]"
-		if keypress == 'l' and player.x<w-1:
+		if keypress == right_key and player.x<w-1:
 			if(grid[player.x+1][player.y]!=1):
 				r,e = check_for_entities(player.x+1,player.y,player)
 				if r == False:
@@ -337,7 +373,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Right"
-		if keypress == 'h' and player.x>0:
+		if keypress == left_key and player.x>0:
 			if(grid[player.x-1][player.y]!=1):
 				r,e = check_for_entities(player.x-1,player.y,player)
 				if r == False:
@@ -349,7 +385,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Left"
-		if keypress == 'k' and player.y>0:
+		if keypress == up_key and player.y>0:
 			if(grid[player.x][player.y-1]!=1):
 				r,e = check_for_entities(player.x,player.y-1,player)
 				if r == False:
@@ -361,7 +397,7 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 			else:
 				debug="this direction is obstucted by a wall"
 				#debug = "Move Up"
-		if keypress == 'j' and player.y<h-2:
+		if keypress == down_key and player.y<h-2:
 			if(grid[player.x][player.y+1]!=1):
 				r,e = check_for_entities(player.x,player.y+1,player)
 				if r == False:
@@ -386,16 +422,16 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 			debug+="\nend of turn?"
 
 	elif player.turn == True and cursor_active == True:
-		if keypress == 'l' and cursor_position[0]<w-1:
+		if keypress == right_key and cursor_position[0]<w-1:
 			cursor_position[0]+=1;
 				#debug = "Move Right"
-		if keypress == 'h' and cursor_position[0]>0:
+		if keypress == left_key and cursor_position[0]>0:
 			cursor_position[0]-=1;
 				#debug = "Move Left"
-		if keypress == 'j' and cursor_position[1]>0:
+		if keypress == down_key and cursor_position[1]>0:
 			cursor_position[1]-=1;
 				#debug = "Move Up"
-		if keypress == 'k'  and cursor_position[1]<h-2:
+		if keypress == up_key  and cursor_position[1]<h-2:
 			cursor_position[1]+=1;
 			#cursor controller
 		debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
@@ -409,8 +445,8 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 							if enemy.alive==True:
 								battle.battle(player,enemy,True)
 							else:
-								food = round(enemy.lv*enemy.size)*5
-								text = "eating "+str(enemy.name)+" recover "+str(food)
+								food = round(1+enemy.lv*enemy.size)*5
+								text = "eating "+str(enemy.name)
 								ui.delay_text(text,True,True)
 								time.sleep(0.25)
 								player.recover(food)

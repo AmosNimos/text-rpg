@@ -4,19 +4,16 @@
 #name idea:
 
 import random as rn
-start = ["maou","titan","demon","monster","death","blood","spirit","dungeon","god","infernal","symphony","domination"]
+start = ["maou","titan","demon","monster","death","blood","spirit","dungeon","god","infernal","symphony","domination","creature","beast","behemoth","villain","fiend","soul","immortal","undying","eternal","ruler","infamous","corrupt","grave","crypt","tomb"]
 middle = [" & "," of "," "] #" of the "
-end = ["rise","rising","evolution","possession","reign","infinite","legend","execution","struggle","world","cry","evil","survival","dead","order","king","collapse"]
+end = ["rise","rising","evolution","possession","reign","infinite","legend","execution","struggle","world","cry","evil","survival","dead","order","king","collapse","cathacombs","feast","dynasty","control","ascendancy","command","empire","power","supremacy","sin"]
 
-names=[]
-for x in end:
-	for y in start:
-		names.append(y+middle[rn.randint(0,2)]+x)
+#rn.randint(0,2)
 
-print(names[rn.randint(0,len(names)-1)])
-print(names[rn.randint(0,len(names)-1)])
-print(names[rn.randint(0,len(names)-1)])
-print(names[rn.randint(0,len(names)-1)])
-print(names[rn.randint(0,len(names)-1)])
-print(names[rn.randint(0,len(names)-1)])
+def gen_name():
+	names=[]
+	for x in end:
+		for y in start:
+			names.append(y+middle[2]+x)
+	return names[rn.randint(0,len(names)-1)]
 

@@ -1,11 +1,15 @@
 import sys
 import os
 import ui
+import name_generator
+
+game_title = name_generator.gen_name()
 
 limit_number_lenght=6
 # start
 os.system('clear')
-ui.main_menu()
+ui.main_menu(game_title)
+
 
 
 #adversary.append()
