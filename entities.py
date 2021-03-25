@@ -138,14 +138,18 @@ class Monster:
 			self.mp=self.max_mp
 
 	def levelup(self,new_skill):
+		ui.clear()
+		text = "LEVEL UP\n"
+		text += self.name+"LV:"+str(self.lv)+" HAS BECOME LV:"+str(self.name+1)
 		self.lv+=1
+		ui.delay_text(text,True,True)
+		time.sleep(0.35)
 
 	def gain_skill(self,new_skill):
 		self.skills.append(new_skill)
 
 ##Animal classes
 class Insect(Monster):
-
 	def __init__(self,name,player,level):
 		scale = [0.5,1,1.5,2]
 		monster_rank = ["Small","Regular","Large","Giant"]

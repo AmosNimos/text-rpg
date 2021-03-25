@@ -71,7 +71,7 @@ def skills_menu(player,opponent):
 		if player.turn == True:
 			skills_names = []
 			for skill in player.skills:
-				skills_names.append(skill["name"]+" | SP:"+str(skill["cost_sp"])+" Range:"+str(skill["range"]))
+				skills_names.append("["+skill["name"]+"] SP:"+str(skill["cost_sp"])+", Range:"+str(skill["range"]))
 			entry = ui.menu(player.skills,skills_names,head)
 			#text = ui.skills_options(player)
 			print(line)

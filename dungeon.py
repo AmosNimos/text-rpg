@@ -47,13 +47,19 @@ dungeon_floor=1
 
 
 
+#print(rows)
+#print(cols)
+#exit()
+
 #rows == height
 h=0
-if (int((rows)-8)) == 0:
-	h = int((rows)-8)
-else:
-	h = int((rows)-8)+1
-w=h
+h=int(cols/2)-2 #weight
+w=rows-4 #height
+if (h % 2) != 0:
+	h += 1
+if (w % 2) != 0:
+	w += 1
+
 
 cursor_active=False
 cursor_position = [0,0]
@@ -71,10 +77,10 @@ def gen_enemy():
 #0=empty, 1=wall, 2=stair
 def display(grid):
 	linetxt=""
-	for y in range(len(grid)):
+	for x in range(len(grid)):
 		print(linetxt)
 		linetxt="  "
-		for x in range(len(grid[y])-1):
+		for y in range(len(grid[x])-1):
 			creature=False
 			for enemy in adversary:
 				if x == enemy.x and y == enemy.y:
@@ -155,24 +161,27 @@ def gen_automata(w,h,grid):
 
 def gen_symetry(w,h,grid):
 	side=rn.randint(0,3)
+	#side=3
 	if side == 1 or side == 3:
-		half_w = int(w)
-		half_h = int(h/2)-1
-		sym=rn.randint(0,1)
+		half_h = int(h/2)-2
+		half_w = w
+		#sym=rn.randint(0,1)
+		sym=0
 		for x in range(half_h):
 			if rn.randint(0,sym)==0:
-				for y in range(half_h):
+				for y in range(half_w):
 					if grid[y][x] == 1:
 						grid[y][half_h+(half_h-x)]=1
 					elif grid[y][x] == 0:
 							grid[y][half_h+(half_h-x)]=0
 	if side == 2 or side == 3:
-		half_w = int(w/2)-1
-		half_h = int(h)
-		sym=rn.randint(0,1)
+		half_w = int(w/2)-2
+		half_h = h
+		#sym=rn.randint(0,1)
+		sym=0
 		for y in range(half_w):
 			if rn.randint(0,sym)==0:
-				for x in range(half_w):
+				for x in range(half_h):
 					if grid[y][x] == 1:
 						grid[half_w+(half_w-y)][x]=1
 					elif grid[y][x] == 0:

@@ -6,6 +6,42 @@ from termcolor import colored, cprint
 
 #status :poison=take damage,paralisis=cant attack,recovery recover hp,
 
+class skills:
+	def __init__(self,name,sp,mp,dm,range,se,effect):
+		self.name=name
+		self.lv=1
+		self.sp=sp
+		self.mp=mp
+		self.dm=dm #damage
+		self.range=1
+		self.se=se #status effect
+		self.effect=effect
+
+	def status_effect():
+		if poison_status:
+			#damage hp for x turn
+			pass
+		if heal_status:
+			#heal hp for x turn
+			pass
+		if stun:
+			#the enemy can't attack for x turn
+			pass
+		if weaken:
+			#fix poison turn and strenght
+			pass
+		if sacrifice_hp:
+			#loose hp
+			pass
+		if sacrifice_sp:
+			#loose sp
+			pass
+		if heal:
+			#heal hp on use
+			pass
+
+skills("Bite",1,0,1,1,"","")
+
 bite_skill={
 	"name":"Bite",
 	"description":"A simple phisical attack to pierce the skin of the target with the teeth, fangs, or mouthparts.",
