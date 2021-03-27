@@ -51,8 +51,8 @@ dungeon_floor=1
 #print(cols)
 #exit()
 
-#rows == height
-h=0
+#w=int(cols/2)-2 #weight
+#h=rows-4 #height
 h=int(cols/2)-2 #weight
 w=rows-4 #height
 if (h % 2) != 0:
@@ -77,10 +77,10 @@ def gen_enemy():
 #0=empty, 1=wall, 2=stair
 def display(grid):
 	linetxt=""
-	for x in range(len(grid)):
+	for y in range(len(grid)-2):
 		print(linetxt)
 		linetxt="  "
-		for y in range(len(grid[x])-1):
+		for x in range(len(grid[y])-1):
 			creature=False
 			for enemy in adversary:
 				if x == enemy.x and y == enemy.y:
@@ -110,7 +110,6 @@ def display(grid):
 				linetxt+=" "+colored(symbol,"white","on_blue", attrs=["reverse"])
 			else:
 				linetxt+=" "+colored(symbol,color)
-	#print("")
 	print(ui.gen_line("+","-"))
 
 def gen_grid(w,h):
@@ -363,7 +362,7 @@ def check_for_wall(from_x,from_y,to_x,to_y):
 				to_y+=1
 	return False
 
-def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor):
+def player_movement(cursor_active,cursor_position,adversary,grid,dungeon_floor):
 	debug=""
 	if player.moves > player.atribute["spd"]-1:
 		player.turn=False
@@ -437,10 +436,10 @@ def player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor
 		if keypress == left_key and cursor_position[0]>0:
 			cursor_position[0]-=1;
 				#debug = "Move Left"
-		if keypress == down_key and cursor_position[1]>0:
+		if keypress == up_key and cursor_position[1]>0:
 			cursor_position[1]-=1;
 				#debug = "Move Up"
-		if keypress == up_key  and cursor_position[1]<h-2:
+		if keypress == down_key  and cursor_position[1]<h-2:
 			cursor_position[1]+=1;
 			#cursor controller
 		debug=appraisal(int(cursor_position[0]),int(cursor_position[1]))
@@ -550,7 +549,7 @@ display(grid)
 
 while True:
 	keypress = main()
-	cursor_active,cursor_position,debug,dungeon_floor,adversary,grid = player_controller(cursor_active,cursor_position,adversary,grid,dungeon_floor)
+	cursor_active,cursor_position,debug,dungeon_floor,adversary,grid = player_movement(cursor_active,cursor_position,adversary,grid,dungeon_floor)
 	#permenent controlle
 	if keypress == '\x1b':
 		ui.clear()
